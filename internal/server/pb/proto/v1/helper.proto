@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+
+package helper;
+option go_package = "grpc/v1";
+
+service HelperService {
+  rpc EstimateStargateBridgeFee(EstimateStargateBridgeFeeRequest) returns (EstimateStargateBridgeFeeResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/api/v1/helper/stargate-bridge-fee/estimate",
+      body: "*"
+    };
+  }
+  rpc ValidatePK(ValidatePKRequest) returns (ValidatePKResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/api/v1/helper/validatePK",
+      body: "*"
+    };
+  }
+
+  rpc ValidateProxy(ValidateProxyRequest) returns (ValidateProxyResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/api/v1/helper/validateProxy",
+      body: "*"
+    };
+  }
+}
+
+message ValidatePKRequest {
+  string pk = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["pk"]
+    }
+  };
+}
+
+message EstimateStargateBridgeFeeRequest {
+  shared.Network from = 1;
+  shared.Network to = 2;
+  string profile_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["from", "to", "profile_id"]
+    }
+  };
+}
+
+message EstimateStargateBridgeFeeResponse {
+  int64 wei = 1;
+  string usd = 2;
+  string eth = 3;
+  optional string error = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["wei", "usd", "eth"]
+    }
+  };
+}
+
+message ValidatePKResponse {
+  bool valid = 1;
+  optional string wallet_id = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["valid"]
+    }
+  };
+}
+
+message ValidateProxyRequest {
+  string proxy = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["proxy"]
+    }
+  };
+}
+
+message ValidateProxyResponse {
+  bool valid = 1;
+  string error_message = 2;
+  string country_name = 3;
+  string countryCode = 4;
+  string ip = 5;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["valid", "countryName", "countryCode", "ip", "error_message"]
+    }
+  };
+}

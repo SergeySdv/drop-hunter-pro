@@ -1,0 +1,8 @@
+/node_modules
+.env
+tests
+binance_withraw_mmsk
+stargate_bridge
+stargate_stake
+transfer_okex
+tests

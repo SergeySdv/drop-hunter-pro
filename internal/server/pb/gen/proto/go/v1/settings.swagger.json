@@ -1,0 +1,336 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/settings.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SettingsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/gw/api/v1/settings/get": {
+      "post": {
+        "operationId": "SettingsService_GetSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetSettingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetSettingsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SettingsService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/settings/network/rpc/validate": {
+      "post": {
+        "operationId": "SettingsService_GetNetworkByRPC",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetNetworkByRPCResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetNetworkByRPCRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SettingsService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/settings/reset": {
+      "post": {
+        "operationId": "SettingsService_Reset",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ResetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SettingsService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/settings/update": {
+      "post": {
+        "operationId": "SettingsService_UpdateSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateSettingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateSettingsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SettingsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "GetNetworkByRPCRequest": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "endpoint",
+        "network"
+      ]
+    },
+    "GetNetworkByRPCResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "suggestedGasPrice": {
+          "type": "string",
+          "format": "int64"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "valid",
+        "id",
+        "suggestedGasPrice"
+      ]
+    },
+    "GetSettingsRequest": {
+      "type": "object"
+    },
+    "GetSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "settings": {
+          "$ref": "#/definitions/Settings"
+        }
+      },
+      "required": [
+        "settings"
+      ]
+    },
+    "Network": {
+      "type": "string",
+      "enum": [
+        "ARBITRUM",
+        "OPTIMISM",
+        "BinanaceBNB",
+        "Etherium",
+        "POLIGON",
+        "AVALANCHE"
+      ],
+      "default": "ARBITRUM"
+    },
+    "ResetRequest": {
+      "type": "object"
+    },
+    "ResetResponse": {
+      "type": "object",
+      "properties": {
+        "settings": {
+          "$ref": "#/definitions/Settings"
+        }
+      },
+      "required": [
+        "settings"
+      ]
+    },
+    "Settings": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "bnb": {
+          "$ref": "#/definitions/SettingsNetwork"
+        },
+        "optimism": {
+          "$ref": "#/definitions/SettingsNetwork"
+        },
+        "arbitrum": {
+          "$ref": "#/definitions/SettingsNetwork"
+        },
+        "etherium": {
+          "$ref": "#/definitions/SettingsNetwork"
+        },
+        "polygon": {
+          "$ref": "#/definitions/SettingsNetwork"
+        },
+        "avalanche": {
+          "$ref": "#/definitions/SettingsNetwork"
+        }
+      },
+      "required": [
+        "bnb",
+        "optimism",
+        "arbitrum",
+        "etherium",
+        "polygon",
+        "avalanche"
+      ]
+    },
+    "SettingsNetwork": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "useLimitGas": {
+          "type": "boolean"
+        },
+        "rpcEndpoint": {
+          "type": "string"
+        },
+        "gasTotal": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "required": [
+        "id",
+        "useLimitGas",
+        "rpcEndpoint"
+      ]
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "UpdateSettingsRequest": {
+      "type": "object",
+      "properties": {
+        "settings": {
+          "$ref": "#/definitions/Settings"
+        }
+      },
+      "required": [
+        "settings"
+      ]
+    },
+    "UpdateSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "settings": {
+          "$ref": "#/definitions/Settings"
+        }
+      },
+      "required": [
+        "settings"
+      ]
+    }
+  }
+}

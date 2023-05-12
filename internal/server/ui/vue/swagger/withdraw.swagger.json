@@ -1,0 +1,358 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/withdraw.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "WithdrawerService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/gw/api/v1/withdrawer/add": {
+      "post": {
+        "operationId": "WithdrawerService_CreateWithdrawer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateWithdrawerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateWithdrawerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WithdrawerService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/withdrawer/delete": {
+      "post": {
+        "operationId": "WithdrawerService_DeleteWithdrawer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteWithdrawerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteWithdrawerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WithdrawerService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/withdrawer/exchange/options": {
+      "post": {
+        "operationId": "WithdrawerService_GetExchangeWithdrawOptions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetExchangeWithdrawOptionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetExchangeWithdrawOptionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WithdrawerService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/withdrawer/list": {
+      "post": {
+        "operationId": "WithdrawerService_ListWithdrawer",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListWithdrawerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListWithdrawerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WithdrawerService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "CreateWithdrawerRequest": {
+      "type": "object",
+      "properties": {
+        "exchangeType": {
+          "$ref": "#/definitions/ExchangeType"
+        },
+        "label": {
+          "type": "string"
+        },
+        "secretKey": {
+          "type": "string"
+        },
+        "apiKey": {
+          "type": "string"
+        },
+        "proxy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exchangeType",
+        "label",
+        "secretKey",
+        "apiKey"
+      ]
+    },
+    "CreateWithdrawerResponse": {
+      "type": "object",
+      "properties": {
+        "withdrawer": {
+          "$ref": "#/definitions/Withdrawer"
+        }
+      },
+      "required": [
+        "withdrawer"
+      ]
+    },
+    "DeleteWithdrawerRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "DeleteWithdrawerResponse": {
+      "type": "object"
+    },
+    "ExchangeType": {
+      "type": "string",
+      "enum": [
+        "Binance"
+      ],
+      "default": "Binance"
+    },
+    "ExchangeWithdrawNetwork": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "type": "string"
+        },
+        "minAmount": {
+          "type": "string"
+        },
+        "maxAmount": {
+          "type": "string"
+        },
+        "fee": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "network",
+        "minAmount",
+        "maxAmount",
+        "fee"
+      ]
+    },
+    "ExchangeWithdrawOptions": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "networks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExchangeWithdrawNetwork"
+          }
+        }
+      },
+      "required": [
+        "token",
+        "networks",
+        "amount"
+      ]
+    },
+    "GetExchangeWithdrawOptionsRequest": {
+      "type": "object",
+      "properties": {
+        "withdrawerId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "withdrawerId"
+      ]
+    },
+    "GetExchangeWithdrawOptionsResponse": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExchangeWithdrawOptions"
+          }
+        }
+      },
+      "required": [
+        "tokens"
+      ]
+    },
+    "ListWithdrawerRequest": {
+      "type": "object"
+    },
+    "ListWithdrawerResponse": {
+      "type": "object",
+      "properties": {
+        "withdrawers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Withdrawer"
+          }
+        }
+      },
+      "required": [
+        "withdrawers"
+      ]
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "Withdrawer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "exchangeType": {
+          "$ref": "#/definitions/ExchangeType"
+        },
+        "label": {
+          "type": "string"
+        },
+        "secretKey": {
+          "type": "string"
+        },
+        "apiKey": {
+          "type": "string"
+        },
+        "proxy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "exchangeType",
+        "label",
+        "secretKey",
+        "apiKey",
+        "proxy",
+        "createdAt"
+      ]
+    }
+  }
+}

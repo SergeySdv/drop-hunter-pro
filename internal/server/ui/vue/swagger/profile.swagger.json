@@ -1,0 +1,603 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/profile.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ProfileService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/gw/api/v1/profile/add": {
+      "post": {
+        "operationId": "ProfileService_CreateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/balance": {
+      "post": {
+        "operationId": "ProfileService_GetBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetBalanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/delete": {
+      "post": {
+        "operationId": "ProfileService_DeleteProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/DeleteProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/get": {
+      "post": {
+        "operationId": "ProfileService_GetProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/label/validate": {
+      "post": {
+        "operationId": "ProfileService_ValidateLabel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ValidateLabelResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ValidateLabelRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/list": {
+      "post": {
+        "operationId": "ProfileService_ListProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ListProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ListProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/search": {
+      "post": {
+        "operationId": "ProfileService_SearchProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/SearchProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SearchProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/api/gw/api/v1/profile/update": {
+      "post": {
+        "operationId": "ProfileService_UpdateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "Balance": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/Token"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "wei": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token",
+        "amount",
+        "wei"
+      ]
+    },
+    "CreateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "proxy": {
+          "type": "string"
+        },
+        "mmskPk": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "okexAccount": {
+          "$ref": "#/definitions/OkexAccount"
+        }
+      },
+      "required": [
+        "label",
+        "mmskPk"
+      ]
+    },
+    "CreateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/definitions/Profile"
+        }
+      },
+      "required": [
+        "profile"
+      ]
+    },
+    "DeleteProfileRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "DeleteProfileResponse": {
+      "type": "object"
+    },
+    "GetBalanceRequest": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "profileId",
+        "network"
+      ]
+    },
+    "GetBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Balance"
+          }
+        }
+      },
+      "required": [
+        "balance"
+      ]
+    },
+    "GetProfileRequest": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "profileId"
+      ]
+    },
+    "GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/definitions/Profile"
+        }
+      },
+      "required": [
+        "profile"
+      ]
+    },
+    "ListProfileRequest": {
+      "type": "object"
+    },
+    "ListProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Profile"
+          }
+        }
+      },
+      "required": [
+        "profiles"
+      ]
+    },
+    "Network": {
+      "type": "string",
+      "enum": [
+        "ARBITRUM",
+        "OPTIMISM",
+        "BinanaceBNB",
+        "Etherium",
+        "POLIGON",
+        "AVALANCHE"
+      ],
+      "default": "ARBITRUM"
+    },
+    "OkexAccount": {
+      "type": "object",
+      "properties": {
+        "subAccName": {
+          "type": "string"
+        },
+        "depositAddr": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "subAccName",
+        "depositAddr"
+      ]
+    },
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "proxy": {
+          "type": "string"
+        },
+        "mmskId": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "okexAccount": {
+          "$ref": "#/definitions/OkexAccount"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "meta",
+        "createdAt",
+        "mmskId"
+      ]
+    },
+    "SearchProfileRequest": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pattern"
+      ]
+    },
+    "SearchProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Profile"
+          }
+        }
+      },
+      "required": [
+        "profiles"
+      ]
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "Token": {
+      "type": "string",
+      "enum": [
+        "USDT",
+        "ETH",
+        "USDC",
+        "STG",
+        "BNB",
+        "MATIC",
+        "AVAX"
+      ],
+      "default": "USDT"
+    },
+    "UpdateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string"
+        },
+        "proxy": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "string"
+        },
+        "okexAccount": {
+          "$ref": "#/definitions/OkexAccount"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "profileId",
+        "label"
+      ]
+    },
+    "UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/definitions/Profile"
+        }
+      },
+      "required": [
+        "profile"
+      ]
+    },
+    "ValidateLabelRequest": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "profileId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ]
+    },
+    "ValidateLabelResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "valid"
+      ]
+    }
+  }
+}
