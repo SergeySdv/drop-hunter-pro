@@ -113,6 +113,28 @@ export class WithdrawerService {
   /**
    *
    */
+  withdrawerServiceExportExchangeAccounts(
+    params: {
+      /**  */
+      body: ExportExchangeAccountsReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<ExportExchangeAccountsRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdraw/export';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
   withdrawerServiceCreateWithdrawer(
     params: {
       /**  */
@@ -121,7 +143,7 @@ export class WithdrawerService {
     options: IRequestOptions = {}
   ): Promise<CreateWithdrawerResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/withdrawer/add';
+      let url = basePath + '/api/gw/v1/withdrawer/add';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -143,7 +165,29 @@ export class WithdrawerService {
     options: IRequestOptions = {}
   ): Promise<DeleteWithdrawerResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/withdrawer/delete';
+      let url = basePath + '/api/gw/v1/withdrawer/delete';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceGetExchangeDepositOptions(
+    params: {
+      /**  */
+      body: GetExchangeDepositOptionsRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GetExchangeDepositOptionsResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/exchange/deposit/options';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -165,7 +209,29 @@ export class WithdrawerService {
     options: IRequestOptions = {}
   ): Promise<GetExchangeWithdrawOptionsResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/withdrawer/exchange/options';
+      let url = basePath + '/api/gw/v1/withdrawer/exchange/options';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceGetWithdrawer(
+    params: {
+      /**  */
+      body: GetWithdrawerRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GetWithdrawerResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/get';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -187,7 +253,7 @@ export class WithdrawerService {
     options: IRequestOptions = {}
   ): Promise<ListWithdrawerResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/withdrawer/list';
+      let url = basePath + '/api/gw/v1/withdrawer/list';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -198,6 +264,204 @@ export class WithdrawerService {
       axios(configs, resolve, reject);
     });
   }
+  /**
+   *
+   */
+  withdrawerServiceCreateSubWithdrawer(
+    params: {
+      /**  */
+      body: CreateOkexWithdrawerRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<CreateOkexWithdrawerResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/sub/add';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceOkexDepositAddrAttach(
+    params: {
+      /**  */
+      body: OkexDepositAddrAttachRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<OkexDepositAddrAttachResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/sub/deposit/attach';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceOkexDepositAddrDetach(
+    params: {
+      /**  */
+      body: OkexDepositAddrDetachRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<OkexDepositAddrDetachResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/sub/deposit/detach';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceListDepositAddresses(
+    params: {
+      /**  */
+      body: ListDepositAddressesRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<ListDepositAddressesResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/sub/deposit/list';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceListSubWithdrawer(
+    params: {
+      /**  */
+      body: ListSubWithdrawerRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<ListSubWithdrawerResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/sub/list';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceUpdateWithdrawer(
+    params: {
+      /**  */
+      body: UpdateWithdrawerRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<UpdateWithdrawerResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/update';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceWithdraw(
+    params: {
+      /**  */
+      body: WithdrawReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<WithdrawRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/withdraw';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  withdrawerServiceWithdrawStatus(
+    params: {
+      /**  */
+      body: WithdrawStatusReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<WithdrawStatusRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/withdrawer/withdraw/status';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+}
+
+export interface CreateOkexWithdrawerRequest {
+  /**  */
+  parentId: string;
+
+  /**  */
+  label: string;
+
+  /**  */
+  secretKey: string;
+
+  /**  */
+  apiKey: string;
+
+  /**  */
+  proxy?: string;
+}
+
+export interface CreateOkexWithdrawerResponse {
+  /**  */
+  error?: string;
 }
 
 export interface CreateWithdrawerRequest {
@@ -229,6 +493,20 @@ export interface DeleteWithdrawerRequest {
 
 export interface DeleteWithdrawerResponse {}
 
+export interface DepositAddresses {
+  /**  */
+  addr: string;
+
+  /**  */
+  profileId?: string;
+
+  /**  */
+  tag?: string;
+
+  /**  */
+  profileLabel?: string;
+}
+
 export interface ExchangeWithdrawNetwork {
   /**  */
   network: string;
@@ -254,6 +532,29 @@ export interface ExchangeWithdrawOptions {
   networks: ExchangeWithdrawNetwork[];
 }
 
+export interface ExportExchangeAccountsReq {}
+
+export interface ExportExchangeAccountsRes {
+  /**  */
+  text: string;
+}
+
+export interface GetExchangeDepositOptionsRequest {
+  /**  */
+  withdrawerId: string;
+
+  /**  */
+  token: string;
+
+  /**  */
+  network: string;
+}
+
+export interface GetExchangeDepositOptionsResponse {
+  /**  */
+  addr: string;
+}
+
 export interface GetExchangeWithdrawOptionsRequest {
   /**  */
   withdrawerId: string;
@@ -264,11 +565,121 @@ export interface GetExchangeWithdrawOptionsResponse {
   tokens: ExchangeWithdrawOptions[];
 }
 
+export interface GetWithdrawerRequest {
+  /**  */
+  withdrawerId: string;
+}
+
+export interface GetWithdrawerResponse {
+  /**  */
+  withdrawer: Withdrawer;
+
+  /**  */
+  error?: string;
+}
+
+export interface ListDepositAddressesRequest {
+  /**  */
+  withdrawerId: string;
+}
+
+export interface ListDepositAddressesResponse {
+  /**  */
+  items: DepositAddresses[];
+}
+
+export interface ListSubWithdrawerRequest {
+  /**  */
+  withdrawerId: string;
+}
+
+export interface ListSubWithdrawerResponse {
+  /**  */
+  withdrawers: Withdrawer[];
+}
+
 export interface ListWithdrawerRequest {}
 
 export interface ListWithdrawerResponse {
   /**  */
   withdrawers: Withdrawer[];
+}
+
+export interface OkexDepositAddrAttachRequest {
+  /**  */
+  profileId: string;
+
+  /**  */
+  okexDepositAddr: string;
+
+  /**  */
+  withdrawerId: string;
+}
+
+export interface OkexDepositAddrAttachResponse {}
+
+export interface OkexDepositAddrDetachRequest {
+  /**  */
+  profileId: string;
+
+  /**  */
+  okexDepositAddr: string;
+
+  /**  */
+  withdrawerId: string;
+}
+
+export interface OkexDepositAddrDetachResponse {}
+
+export interface UpdateWithdrawerRequest {
+  /**  */
+  withdrawerId: string;
+
+  /**  */
+  proxy: string;
+
+  /**  */
+  label: string;
+}
+
+export interface UpdateWithdrawerResponse {
+  /**  */
+  error?: string;
+}
+
+export interface WithdrawReq {
+  /**  */
+  network: string;
+
+  /**  */
+  token: string;
+
+  /**  */
+  amount: string;
+
+  /**  */
+  withdrawerId: string;
+
+  /**  */
+  profileId: string;
+}
+
+export interface WithdrawRes {
+  /**  */
+  withdrawId: string;
+
+  /**  */
+  errorMessage?: string;
+}
+
+export interface WithdrawStatusReq {
+  /**  */
+  withdrawId: string;
+}
+
+export interface WithdrawStatusRes {
+  /**  */
+  status: string;
 }
 
 export interface Withdrawer {
@@ -282,12 +693,6 @@ export interface Withdrawer {
   label: string;
 
   /**  */
-  secretKey: string;
-
-  /**  */
-  apiKey: string;
-
-  /**  */
   proxy: string;
 
   /**  */
@@ -295,5 +700,6 @@ export interface Withdrawer {
 }
 
 export enum ExchangeType {
-  'Binance' = 'Binance'
+  'Binance' = 'Binance',
+  'Okex' = 'Okex'
 }

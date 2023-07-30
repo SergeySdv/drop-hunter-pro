@@ -113,6 +113,50 @@ export class ProcessService {
   /**
    *
    */
+  processServiceDisableAutoRetry(
+    params: {
+      /**  */
+      body: DisableAutoRetryRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<DisableAutoRetryResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/auto-retry/disable';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceEnableAutoRetry(
+    params: {
+      /**  */
+      body: EnableAutoRetryRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<EnableAutoRetryResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/auto-retry/enable';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
   processServiceCancelProcess(
     params: {
       /**  */
@@ -121,7 +165,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<CancelProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/cancel';
+      let url = basePath + '/api/gw/v1/process/cancel';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -143,7 +187,29 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<CreateProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/create';
+      let url = basePath + '/api/gw/v1/process/create';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceEstimateCost(
+    params: {
+      /**  */
+      body: EstimateCostRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<EstimateCostResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/estimate-cost';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -165,7 +231,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<GetProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/get';
+      let url = basePath + '/api/gw/v1/process/get';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -187,7 +253,29 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<ListProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/list';
+      let url = basePath + '/api/gw/v1/process/list';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceGetProfileTransactions(
+    params: {
+      /**  */
+      body: GetProfileTransactionsReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GetProfileTransactionsRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/profile/transactions';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -209,7 +297,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<ResumeProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/resume';
+      let url = basePath + '/api/gw/v1/process/resume';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -231,7 +319,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<RetryProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/retry';
+      let url = basePath + '/api/gw/v1/process/retry';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -253,7 +341,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<StopProcessResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/stop';
+      let url = basePath + '/api/gw/v1/process/stop';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -275,7 +363,95 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<GetProcessTaskHistoryResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/task/history';
+      let url = basePath + '/api/gw/v1/process/task/history';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceGetTaskSettings(
+    params: {
+      /**  */
+      body: GetTaskSettingsRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GetTaskSettingsResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/task/settings';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceSetTaskSettings(
+    params: {
+      /**  */
+      body: SetTaskSettingsRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<SetTaskSettingsResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/task/settings/set';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceSkipProcessTask(
+    params: {
+      /**  */
+      body: SkipProcessTaskRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<SkipProcessTaskResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/task/skip';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  processServiceGetTaskTransactions(
+    params: {
+      /**  */
+      body: GetTaskTransactionsReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GetTaskTransactionsRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/process/task/transactions';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -297,7 +473,7 @@ export class ProcessService {
     options: IRequestOptions = {}
   ): Promise<GetProcessUpdatedAtResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/process/updatedAt';
+      let url = basePath + '/api/gw/v1/process/updatedAt';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -308,6 +484,46 @@ export class ProcessService {
       axios(configs, resolve, reject);
     });
   }
+}
+
+export interface AmUni {
+  /**  */
+  gwei?: string;
+
+  /**  */
+  eth?: string;
+
+  /**  */
+  usd?: string;
+
+  /**  */
+  network?: Network;
+
+  /**  */
+  wei?: string;
+}
+
+export interface Amount {
+  /**  */
+  sendAll?: boolean;
+
+  /**  */
+  sendPercent?: number;
+
+  /**  */
+  sendAmount?: number;
+
+  /**  */
+  sendValue?: string;
+
+  /**  */
+  send?: AmUni;
+
+  /**  */
+  balance?: AmUni;
+
+  /**  */
+  gasEstimated?: AmUni;
 }
 
 export interface CancelProcessRequest {
@@ -345,6 +561,79 @@ export interface DelayTask {
 
   /**  */
   maxRandom?: string;
+
+  /**  */
+  randomDuration?: string;
+}
+
+export interface DisableAutoRetryRequest {
+  /**  */
+  processId: string;
+}
+
+export interface DisableAutoRetryResponse {}
+
+export interface EnableAutoRetryRequest {
+  /**  */
+  processId: string;
+}
+
+export interface EnableAutoRetryResponse {}
+
+export interface EstimateCostRequest {
+  /**  */
+  processId: string;
+
+  /**  */
+  profileId: string;
+
+  /**  */
+  taskId: string;
+}
+
+export interface EstimateCostResponse {
+  /**  */
+  error?: string;
+
+  /**  */
+  data?: EstimationTx;
+}
+
+export interface EstimationTx {
+  /**  */
+  balance: AmUni;
+
+  /**  */
+  value: AmUni;
+
+  /**  */
+  gas: AmUni;
+
+  /**  */
+  gasLimit: AmUni;
+
+  /**  */
+  gasPrice: AmUni;
+
+  /**  */
+  gasValuePercent: string;
+}
+
+export interface EzkaliburSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface GetProcessRequest {
@@ -377,14 +666,191 @@ export interface GetProcessUpdatedAtResponse {
   updatedAt: Date;
 }
 
-export interface ListProcessRequest {}
+export interface GetProfileTransactionsReq {
+  /**  */
+  profileId: string;
+}
+
+export interface GetProfileTransactionsRes {
+  /**  */
+  transactions: Transaction[];
+}
+
+export interface GetTaskSettingsRequest {
+  /**  */
+  taskType: TaskType;
+
+  /**  */
+  network: Network;
+}
+
+export interface GetTaskSettingsResponse {
+  /**  */
+  gasLimit?: AmUni;
+}
+
+export interface GetTaskTransactionsReq {
+  /**  */
+  taskId: string;
+}
+
+export interface GetTaskTransactionsRes {
+  /**  */
+  transactions: Transaction[];
+}
+
+export interface IzumiSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface ListProcessRequest {
+  /**  */
+  statuses: ProcessStatus[];
+
+  /**  */
+  offset: string;
+}
 
 export interface ListProcessResponse {
   /**  */
   processes: Process[];
 }
 
+export interface MaverickSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
 export interface MockTask {}
+
+export interface MuteioSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface OkexBinanaceTask {
+  /**  */
+  okexWithdrawerId: string;
+
+  /**  */
+  okexToken: string;
+
+  /**  */
+  okexNetwork: string;
+
+  /**  */
+  binanaceDepositAddr: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  withdrawTxId?: string;
+}
+
+export interface OkexDepositTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  okexAccName?: string;
+
+  /**  */
+  okexAddr?: string;
+
+  /**  */
+  token: Token;
+
+  /**  */
+  address?: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txComplete?: boolean;
+
+  /**  */
+  subMainTransfer?: boolean;
+
+  /**  */
+  amount?: Amount;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface OrbiterBridgeTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  fromNetwork: Network;
+
+  /**  */
+  toNetwork: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  orbiterReceiverAddr?: string;
+
+  /**  */
+  orbiterSenderAddr?: string;
+
+  /**  */
+  swapCompleted?: boolean;
+
+  /**  */
+  tx?: TaskTx;
+}
 
 export interface Process {
   /**  */
@@ -413,6 +879,18 @@ export interface Process {
 
   /**  */
   flowLabel: string;
+
+  /**  */
+  progress: string;
+
+  /**  */
+  deletedAt?: Date;
+
+  /**  */
+  autoRetry: boolean;
+
+  /**  */
+  flow: flow_Flow;
 }
 
 export interface ProcessProfile {
@@ -430,6 +908,9 @@ export interface ProcessProfile {
 
   /**  */
   id: string;
+
+  /**  */
+  profileLabel: string;
 }
 
 export interface ProcessTask {
@@ -498,6 +979,54 @@ export interface RetryProcessRequest {
 
 export interface RetryProcessResponse {}
 
+export interface SetTaskSettingsRequest {
+  /**  */
+  wei: string;
+
+  /**  */
+  taskType: TaskType;
+}
+
+export interface SetTaskSettingsResponse {}
+
+export interface SkipProcessTaskRequest {
+  /**  */
+  taskId: string;
+
+  /**  */
+  processId: string;
+
+  /**  */
+  profileId: string;
+}
+
+export interface SkipProcessTaskResponse {}
+
+export interface SnapshotVoteTask {
+  /**  */
+  space: string;
+
+  /**  */
+  proposal: object;
+}
+
+export interface SpaceFiSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
 export interface StargateBridgeTask {
   /**  */
   fromNetwork: Network;
@@ -510,6 +1039,27 @@ export interface StargateBridgeTask {
 
   /**  */
   toToken: Token;
+
+  /**  */
+  fee?: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  layerZeroStatus?: string;
+
+  /**  */
+  lzscanUrl?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  amount: Amount;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface StopProcessRequest {
@@ -518,6 +1068,96 @@ export interface StopProcessRequest {
 }
 
 export interface StopProcessResponse {}
+
+export interface Swap1inchTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  fromTokenName: string;
+
+  /**  */
+  fromTokenCode: string;
+
+  /**  */
+  fromTokenAddr: string;
+
+  /**  */
+  toTokenName: string;
+
+  /**  */
+  toTokenCode: string;
+
+  /**  */
+  toTokenAddr: string;
+
+  /**  */
+  sendAll?: boolean;
+
+  /**  */
+  sendPercent?: string;
+
+  /**  */
+  sendAmount?: number;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  swapCompleted?: boolean;
+}
+
+export interface SyncSwapLPTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  a: Token;
+
+  /**  */
+  b: Token;
+
+  /**  */
+  tx?: TaskTx;
+
+  /**  */
+  add: boolean;
+}
+
+export interface SyncSwapTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  amount: Amount;
+
+  /**  */
+  amountKind: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  swapCompleted?: boolean;
+
+  /**  */
+  tx?: TaskTx;
+}
 
 export interface Task {
   /**  */
@@ -540,6 +1180,189 @@ export interface Task {
 
   /**  */
   withdrawExchangeTask?: WithdrawExchangeTask;
+
+  /**  */
+  okexDepositTask?: OkexDepositTask;
+
+  /**  */
+  testNetBridgeSwapTask?: TestNetBridgeSwapTask;
+
+  /**  */
+  snapshotVoteTask?: SnapshotVoteTask;
+
+  /**  */
+  okexBinanaceTask?: OkexBinanaceTask;
+
+  /**  */
+  swap1inchTask?: Swap1inchTask;
+
+  /**  */
+  syncSwapTask?: SyncSwapTask;
+
+  /**  */
+  zkSyncOfficialBridgeToEthereumTask?: ZkSyncOfficialBridgeToEthereumTask;
+
+  /**  */
+  orbiterBridgeTask?: OrbiterBridgeTask;
+
+  /**  */
+  zkSyncOfficialBridgeFromEthereumTask?: ZkSyncOfficialBridgeFromEthereumTask;
+
+  /**  */
+  wETHTask?: WETHTask;
+
+  /**  */
+  muteioSwapTask?: MuteioSwapTask;
+
+  /**  */
+  syncSwapLPTask?: SyncSwapLPTask;
+
+  /**  */
+  maverickSwapTask?: MaverickSwapTask;
+
+  /**  */
+  spaceFiSwapTask?: SpaceFiSwapTask;
+
+  /**  */
+  velocoreSwapTask?: VelocoreSwapTask;
+
+  /**  */
+  izumiSwapTask?: IzumiSwapTask;
+
+  /**  */
+  veSyncSwapTask?: VeSyncSwapTask;
+
+  /**  */
+  ezkaliburSwapTask?: EzkaliburSwapTask;
+
+  /**  */
+  zkSwapTask?: ZkSwapTask;
+}
+
+export interface TaskTx {
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  retryCount?: string;
+
+  /**  */
+  url?: string;
+
+  /**  */
+  network?: Network;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  gasEstimated?: AmUni;
+
+  /**  */
+  gasResult?: AmUni;
+
+  /**  */
+  gasLimit?: AmUni;
+
+  /**  */
+  multiplier?: number;
+}
+
+export interface TestNetBridgeSwapTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  minAmount: string;
+
+  /**  */
+  maxAmount: string;
+
+  /**  */
+  amount?: string;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface Transaction {
+  /**  */
+  id: string;
+
+  /**  */
+  code: string;
+
+  /**  */
+  taskId: string;
+
+  /**  */
+  profileId: string;
+
+  /**  */
+  processId: string;
+
+  /**  */
+  userId: string;
+
+  /**  */
+  createdAt: Date;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  url: string;
+}
+
+export interface VeSyncSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface VelocoreSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface WETHTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  wrap: boolean;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface WithdrawExchangeTask {
@@ -566,6 +1389,86 @@ export interface WithdrawExchangeTask {
 
   /**  */
   txId?: string;
+
+  /**  */
+  withdrawAddr?: string;
+
+  /**  */
+  useExternalAddr?: boolean;
+
+  /**  */
+  sendAllCoins?: boolean;
+}
+
+export interface ZkSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface ZkSyncOfficialBridgeFromEthereumTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface ZkSyncOfficialBridgeToEthereumTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  amountKind: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface flow_Flow {
+  /**  */
+  id: string;
+
+  /**  */
+  label: string;
+
+  /**  */
+  tasks: Task[];
+
+  /**  */
+  nextId?: string;
+
+  /**  */
+  createdAt: Date;
+
+  /**  */
+  deletedAt?: Date;
 }
 
 export enum Network {
@@ -574,7 +1477,11 @@ export enum Network {
   'BinanaceBNB' = 'BinanaceBNB',
   'Etherium' = 'Etherium',
   'POLIGON' = 'POLIGON',
-  'AVALANCHE' = 'AVALANCHE'
+  'AVALANCHE' = 'AVALANCHE',
+  'GOERLIETH' = 'GOERLIETH',
+  'ZKSYNCERA' = 'ZKSYNCERA',
+  'ZKSYNCERATESTNET' = 'ZKSYNCERATESTNET',
+  'ZKSYNCLITE' = 'ZKSYNCLITE'
 }
 
 export enum ProcessStatus {
@@ -590,7 +1497,26 @@ export enum TaskType {
   'StargateBridge' = 'StargateBridge',
   'Mock' = 'Mock',
   'Delay' = 'Delay',
-  'WithdrawExchange' = 'WithdrawExchange'
+  'WithdrawExchange' = 'WithdrawExchange',
+  'OkexDeposit' = 'OkexDeposit',
+  'TestNetBridgeSwap' = 'TestNetBridgeSwap',
+  'SnapshotVote' = 'SnapshotVote',
+  'OkexBinance' = 'OkexBinance',
+  'Swap1inch' = 'Swap1inch',
+  'SyncSwap' = 'SyncSwap',
+  'ZkSyncOfficialBridgeToEthereum' = 'ZkSyncOfficialBridgeToEthereum',
+  'OrbiterBridge' = 'OrbiterBridge',
+  'ZkSyncOfficialBridgeFromEthereum' = 'ZkSyncOfficialBridgeFromEthereum',
+  'WETH' = 'WETH',
+  'MuteioSwap' = 'MuteioSwap',
+  'SyncSwapLP' = 'SyncSwapLP',
+  'MaverickSwap' = 'MaverickSwap',
+  'SpaceFISwap' = 'SpaceFISwap',
+  'VelocoreSwap' = 'VelocoreSwap',
+  'IzumiSwap' = 'IzumiSwap',
+  'VeSyncSwap' = 'VeSyncSwap',
+  'EzkaliburSwap' = 'EzkaliburSwap',
+  'ZkSwap' = 'ZkSwap'
 }
 
 export enum Token {
@@ -600,5 +1526,14 @@ export enum Token {
   'STG' = 'STG',
   'BNB' = 'BNB',
   'MATIC' = 'MATIC',
-  'AVAX' = 'AVAX'
+  'AVAX' = 'AVAX',
+  'veSTG' = 'veSTG',
+  'WETH' = 'WETH',
+  'LUSD' = 'LUSD',
+  'LSD' = 'LSD',
+  'MUTE' = 'MUTE',
+  'MAV' = 'MAV',
+  'SPACE' = 'SPACE',
+  'VC' = 'VC',
+  'IZI' = 'IZI'
 }

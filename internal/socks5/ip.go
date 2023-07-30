@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -19,7 +20,20 @@ type GetIpStatRes struct {
 	ResponseMessage string `json:"response_message"`
 }
 
-func (p *Proxy) GetIpStat(ctx context.Context, ip string) (*GetIpStatRes, error) {
+func (p *Proxy) GetIpStat(ctx context.Context) (*GetIpStatRes, error) {
+
+	ip := ""
+
+	sub := strings.Split(p.Config.Host, ":")
+	if len(sub) != 2 {
+		res, err := p.GetIp(ctx)
+		if err != nil {
+			return nil, err
+		}
+		ip = res.Ip
+	} else {
+		ip = sub[0]
+	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.iplocation.net/?cmd=ip-country&ip="+ip, nil)
 	if err != nil {
@@ -47,6 +61,8 @@ type GetIpRes struct {
 }
 
 func (p *Proxy) GetIp(ctx context.Context) (*GetIpRes, error) {
+
+	//add,err := net.LookupIP("ispycode.com")
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api4.my-ip.io/ip.json", nil)
 	if err != nil {

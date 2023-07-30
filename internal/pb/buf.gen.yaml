@@ -1,0 +1,25 @@
+version: v1
+
+plugins:
+  - name: go
+    opt: paths=source_relative
+    out: gen/proto/go
+
+  - name: go-grpc
+    out: gen/proto/go
+    opt:
+      - paths=source_relative
+
+  - name: grpc-gateway
+    out: gen/proto/go
+    opt:
+      - paths=source_relative
+
+  - name: openapiv2
+    out: gen/proto/go
+    opt:
+      - openapi_naming_strategy=simple
+
+#  - name: ts
+#    opt: paths=source_relative
+#    out: gen/proto/ts

@@ -1,0 +1,479 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+import "v1/withdraw.proto";
+
+package task;
+option go_package = "grpc/v1";
+
+
+enum TaskType {
+  StargateBridge = 0;
+  Mock = 1;
+  Delay = 2;
+  WithdrawExchange = 3;
+  OkexDeposit = 4;
+  TestNetBridgeSwap = 5;
+  SnapshotVote = 6;
+  OkexBinance =7; //deprecated
+  Swap1inch = 8;
+  SyncSwap = 9;
+  ZkSyncOfficialBridgeToEthereum = 10;
+  OrbiterBridge = 11;
+  ZkSyncOfficialBridgeFromEthereum = 12;
+  WETH = 13;
+  MuteioSwap = 14;
+  SyncSwapLP = 15;
+  MaverickSwap = 16;
+  SpaceFISwap = 17;
+  VelocoreSwap = 18;
+  IzumiSwap = 19;
+  VeSyncSwap = 20;
+  EzkaliburSwap = 21;
+  ZkSwap = 22;
+}
+
+
+
+message TaskTx {
+  bool   tx_completed = 1;
+  string tx_id = 2;
+  int64 retry_count = 3;
+  optional string url = 4; //mandatory
+  optional shared.Network  network = 5;  //mandatory
+  optional string code = 6;  //mandatory
+  optional shared.AmUni gas_estimated = 7;
+  optional shared.AmUni gas_result = 8;
+  optional shared.AmUni gas_limit = 9;
+  optional float multiplier = 10;
+}
+
+message SyncSwapLPTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token a = 3;
+  shared.Token b = 4;
+  optional TaskTx tx = 5;
+  bool add = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "a","b", "add"
+      ]
+    }
+  };
+}
+
+message ZkSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message EzkaliburSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message IzumiSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message VeSyncSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message VelocoreSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+
+message SpaceFiSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message MaverickSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message MuteioSwapTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+
+  optional TaskTx tx = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+
+
+message WETHTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  bool wrap = 3;
+  optional TaskTx tx = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "wrap"
+      ]
+    }
+  };
+}
+
+message OrbiterBridgeTask {
+  shared.Amount amount = 1;
+  shared.Network from_network = 2;
+  shared.Network to_network = 3;
+  shared.Token from_token = 4;
+  shared.Token to_token = 5;
+
+  optional bool   tx_completed = 6;//deprecated
+  optional string tx_id = 7;//deprecated
+  optional string orbiter_receiver_addr = 8;
+  optional string orbiter_sender_addr = 9;
+  optional bool swap_completed = 10;//deprecated
+  optional TaskTx tx = 11;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "from_network", "to_network", "from_token","to_token"
+      ]
+    }
+  };
+}
+
+message ZkSyncOfficialBridgeFromEthereumTask {
+  shared.Amount amount = 1;
+  optional bool   tx_completed = 4; //deprecated
+  optional string txId = 5;//deprecated
+  optional TaskTx tx = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount"
+      ]
+    }
+  };
+}
+
+message ZkSyncOfficialBridgeToEthereumTask {
+  shared.Amount amount = 1;
+  shared.Network network = 2;
+  string amount_kind = 3; //deprecated
+  optional bool   tx_completed = 4; //deprecated
+  optional string txId = 5; //deprecated
+  optional TaskTx tx = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "amount", "network", "amount_kind"
+      ]
+    }
+  };
+}
+
+message SyncSwapTask {
+  shared.Network network = 1;
+  shared.Token from_token = 2;
+  shared.Token to_token = 3;
+
+  shared.Amount amount = 4;
+  string amount_kind = 5; //deprecated
+
+  optional string txId = 6;//deprecated
+  optional bool   tx_completed = 7;//deprecated
+  optional bool swap_completed = 8;//deprecated
+  optional TaskTx tx = 9;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "network",
+        "from_token",
+        "to_token",
+        "amount",
+        "amount_kind"
+      ]
+    }
+  };
+}
+
+message Swap1inchTask {
+  shared.Network network = 1;
+
+  string from_token_name = 2;
+  string from_token_code = 3;
+  string from_token_addr = 4;
+
+  string to_token_name = 5;
+  string to_token_code = 6;
+  string to_token_addr = 7;
+
+  oneof amount {
+     bool send_all = 8;
+     int64 send_percent = 9;
+     float send_amount = 10;
+  }
+
+  optional string txId = 11;
+  optional bool   tx_completed = 12;
+  optional bool swap_completed = 13;
+
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "network",
+        "from_token_name",
+        "from_token_code",
+        "from_token_addr",
+        "to_token_name",
+        "to_token_code",
+        "to_token_addr",
+        "amount"
+      ]
+    }
+  };
+}
+
+
+message SnapshotVoteTask {
+  string space = 1;
+  map<string, SnapshotVoteProposal> proposal = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["proposal", "space"]
+    }
+  };
+}
+
+message SnapshotVoteProposal {
+  shared.ProcessStatus status = 1;
+  string msg = 2;
+  string link = 3;
+  string id = 4;
+  string type = 5;
+  string symbol = 6;
+  int64 retryCount = 7;
+}
+
+message TestNetBridgeSwapTask {
+  shared.Network network = 1;
+  string min_amount = 2;
+  string max_amount = 3;
+  optional string amount = 4;
+  optional TaskTx tx = 5;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["network", "min_amount", "max_amount"]
+    }
+  };
+}
+
+message OkexDepositTask {
+  shared.Network network = 1;
+  optional string okex_acc_name = 2; //deprecated
+  optional string  okex_addr = 3; //deprecated
+  shared.Token token = 4;
+  optional string address = 5;
+  optional string txId = 6; //deprecated
+  optional bool tx_complete = 7; //deprecated
+  optional bool sub_main_transfer = 8;
+
+  optional shared.Amount amount = 9;
+  optional TaskTx tx = 10;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["network", "token"]
+    }
+  };
+}
+
+message WithdrawExchangeTask {
+  string withdrawer_id = 1;
+  string network = 2;
+  string amount_min = 3;
+  string amount_max = 4;
+  string token = 6;
+
+  optional string withdraw_order_id = 7;
+  optional string amount = 8;
+  optional string tx_id = 9;
+  optional string withdraw_addr = 10;
+  optional bool use_external_addr = 11;
+  optional bool send_all_coins = 12;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id", "network", "amount_min", "amount_max", "token", "withdraw_order_id"]
+    }
+  };
+}
+
+message StargateBridgeTask {
+  shared.Network fromNetwork = 1;
+  shared.Network toNetwork = 2;
+  shared.Token fromToken = 3;
+  shared.Token toToken = 4;
+
+  optional string fee = 5; //deprecated
+  optional string txId = 6; //deprecated
+  optional string layer_zero_status = 7;
+  optional string lzscan_url = 8;
+  optional bool   tx_completed = 9; //deprecated
+
+  optional shared.Amount amount = 10;
+  optional TaskTx tx = 11;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["fromNetwork", "toNetwork", "fromToken", "toToken", "amount"]
+    }
+  };
+}
+//deprecated
+message MockTask  {}
+
+message DelayTask {
+  int64 duration = 1;
+  optional google.protobuf.Timestamp wait_for = 2;
+  bool random = 3;
+  optional int64 min_random = 4;
+  optional int64 max_random = 5;
+  optional string random_duration = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["duration", "random"]
+    }
+  };
+}
+
+//deprecated
+message OkexBinanaceTask {
+  string okexWithdrawerId = 1;
+  string okexToken = 3;
+  string okexNetwork = 4;
+  string binanaceDepositAddr = 7;
+  optional string txId = 8;
+  optional string withdrawTxId = 9;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "okexWithdrawerId",
+        "binanaceWithdrawerId",
+        "okexNetwork",
+        "okexToken",
+        "binanaceDepositAddr"
+      ]
+    }
+  };
+}

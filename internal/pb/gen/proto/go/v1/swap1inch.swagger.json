@@ -1,0 +1,277 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/swap1inch.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Swap1inchService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/gw/v1/swap1inch/networks": {
+      "post": {
+        "operationId": "Swap1inchService_GetNetworks",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetNetworksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetNetworksRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Swap1inchService"
+        ]
+      }
+    },
+    "/api/gw/v1/swap1inch/swap/options": {
+      "post": {
+        "operationId": "Swap1inchService_GetSwapOptions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetSwapOptionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetSwapOptionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Swap1inchService"
+        ]
+      }
+    },
+    "/api/gw/v1/swap1inch/tokens": {
+      "post": {
+        "operationId": "Swap1inchService_GetTokens",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetTokensResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetTokensRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Swap1inchService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "GetNetworksRequest": {
+      "type": "object"
+    },
+    "GetNetworksResponse": {
+      "type": "object",
+      "properties": {
+        "networks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Network"
+          }
+        }
+      },
+      "required": [
+        "networks"
+      ]
+    },
+    "GetSwapOptionsProtocol": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "estimatedGas": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "estimatedGas"
+      ]
+    },
+    "GetSwapOptionsRequest": {
+      "type": "object",
+      "properties": {
+        "fromTokenAddr": {
+          "type": "string"
+        },
+        "toTokenAddr": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "fromTokenAddr",
+        "toTokenAddr",
+        "amount",
+        "network"
+      ]
+    },
+    "GetSwapOptionsResponse": {
+      "type": "object",
+      "properties": {
+        "protocols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/GetSwapOptionsProtocol"
+          }
+        }
+      },
+      "required": [
+        "protocols"
+      ]
+    },
+    "GetTokensRequest": {
+      "type": "object",
+      "properties": {
+        "network": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "network"
+      ]
+    },
+    "GetTokensResponse": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Swap1inchToken"
+          }
+        }
+      },
+      "required": [
+        "tokens"
+      ]
+    },
+    "Network": {
+      "type": "string",
+      "enum": [
+        "ARBITRUM",
+        "OPTIMISM",
+        "BinanaceBNB",
+        "Etherium",
+        "POLIGON",
+        "AVALANCHE",
+        "GOERLIETH",
+        "ZKSYNCERA",
+        "ZKSYNCERATESTNET",
+        "ZKSYNCLITE"
+      ],
+      "default": "ARBITRUM"
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "Swap1inchToken": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "addr": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "name",
+        "addr"
+      ]
+    }
+  }
+}

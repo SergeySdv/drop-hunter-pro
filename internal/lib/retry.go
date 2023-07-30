@@ -2,10 +2,10 @@ package lib
 
 import (
 	"context"
-	"crypto_scripts/internal/log"
 	"strconv"
 	"time"
 
+	"github.com/hardstylez72/cry/internal/log"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )

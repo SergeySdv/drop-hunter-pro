@@ -21,7 +21,7 @@
             ></v-progress-circular>
           </span>
           <span v-else>
-            stat:  {{ stat }}
+            {{ stat }}
           </span>
         </v-card-text>
       </v-card>
@@ -32,12 +32,7 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from 'vue';
-import {helperService, processService} from "@/generated/services"
-import {Process, ProcessProfile, ProcessStatus, ProcessTask, ProcessTaskHistoryRecord} from "@/generated/process";
-import ViewFlow from "@/components/ViewFlow.vue";
-import StatusCard from "@/components/StatusCard.vue";
-import {Delay, GetStatusColor} from "@/components/helper";
-import dayjs from "dayjs";
+import {helperService,} from "@/generated/services"
 
 export default defineComponent({
   name: "BtnCheckProxy",

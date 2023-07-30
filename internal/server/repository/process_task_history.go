@@ -2,12 +2,12 @@ package repository
 
 import (
 	"context"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"database/sql"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -24,10 +24,10 @@ type ProcessTaskHistory struct {
 
 type Record struct {
 	record *ProcessTaskHistory
-	r      *PGRepository
+	r      *pgRepository
 }
 
-func (r *PGRepository) GetProcessTaskHistory(ctx context.Context, taskId string) ([]*v1.ProcessTaskHistoryRecord, error) {
+func (r *pgRepository) GetProcessTaskHistory(ctx context.Context, taskId string) ([]*v1.ProcessTaskHistoryRecord, error) {
 
 	q := `select * from process_task_history where  task_id = $1 order by started_at desc limit 15`
 
@@ -65,7 +65,7 @@ func (r *PGRepository) GetProcessTaskHistory(ctx context.Context, taskId string)
 	return tmp, nil
 }
 
-func (r *PGRepository) RecordStatusChanged(ctx context.Context, taskId string, before, after v1.ProcessStatus, msg ...string) error {
+func (r *pgRepository) RecordStatusChanged(ctx context.Context, taskId string, before, after v1.ProcessStatus, msg ...string) error {
 	rec, err := r.StartRecord(ctx, taskId, before.String())
 	if err != nil {
 		return err
@@ -73,7 +73,7 @@ func (r *PGRepository) RecordStatusChanged(ctx context.Context, taskId string, b
 	return rec.FinishRecord(ctx, after.String(), strings.Join(msg, "\n"))
 }
 
-func (r *PGRepository) StartRecord(ctx context.Context, taskId, startStatus string) (*Record, error) {
+func (r *pgRepository) StartRecord(ctx context.Context, taskId, startStatus string) (*Record, error) {
 
 	record := ProcessTaskHistory{
 		Id:           uuid.New().String(),

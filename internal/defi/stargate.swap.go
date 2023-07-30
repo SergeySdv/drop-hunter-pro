@@ -2,11 +2,9 @@ package defi
 
 import (
 	"context"
-	"crypto_scripts/internal/lib"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"github.com/pkg/errors"
 )
 
@@ -18,6 +16,7 @@ var (
 		v1.Network_POLIGON:     109,
 		v1.Network_ARBITRUM:    110,
 		v1.Network_OPTIMISM:    111,
+		v1.Network_GOERLIETH:   154,
 		//SBNameFantom:        112,
 		//SBNameMetis:         151,
 	}
@@ -81,15 +80,7 @@ type (
 )
 
 const (
-	typeFuncSwap    uint8                   = 1
-	SBNameEthereum  StargateBridgeChainName = "Ethereum"
-	SBNameBNB       StargateBridgeChainName = "BNB"
-	SBNameAvalanche StargateBridgeChainName = "Avalanche"
-	SBNamePolygon   StargateBridgeChainName = "Polygon"
-	SBNameArbitrum  StargateBridgeChainName = "Arbitrum"
-	SBNameOptimism  StargateBridgeChainName = "Optimism"
-	SBNameFantom    StargateBridgeChainName = "Fantom"
-	SBNameMetis     StargateBridgeChainName = "Metis"
+	typeFuncSwap uint8 = 1
 )
 
 type GasLimit struct {
@@ -97,14 +88,13 @@ type GasLimit struct {
 }
 
 type StargateBridgeSwapReq struct {
-	DestChain v1.Network
-	Wallet    *WalletTransactor
-	Quantity  *big.Int
-	FromToken Token
-	ToToken   Token
-	Fee       *big.Int
-	Gas       *GasLimit
-	Opt       *lib.RetryOpt
+	DestChain    v1.Network
+	Wallet       *WalletTransactor
+	Quantity     *big.Int
+	FromToken    Token
+	ToToken      Token
+	Gas          *Gas
+	EstimateOnly bool
 }
 
 func (r *StargateBridgeSwapReq) Validate(currentChain v1.Network) error {
@@ -143,86 +133,83 @@ func (r *StargateBridgeSwapReq) Validate(currentChain v1.Network) error {
 }
 
 type StargateBridgeSwapRes struct {
-	Tx []*types.Transaction
+	Tx        *Transaction
+	Allowance *Transaction
+	ECost     *EstimatedGasCost
 }
 
 // https://stargateprotocol.gitbook.io/stargate/developers/how-to-swap
 func (c *EtheriumClient) StargateBridgeSwap(ctx context.Context, req *StargateBridgeSwapReq) (*StargateBridgeSwapRes, error) {
 
-	cliChain := c.c.Network
-
-	r := &StargateBridgeSwapRes{
-		Tx: []*types.Transaction{},
-	}
+	r := &StargateBridgeSwapRes{}
 
 	switch req.FromToken {
 	case v1.Token_ETH:
-
-		switch true {
-		case req.DestChain == v1.Network_ARBITRUM && cliChain == v1.Network_OPTIMISM:
-		case req.DestChain == v1.Network_OPTIMISM && cliChain == v1.Network_ARBITRUM:
-		default:
-			return nil, errors.New("invalid input params. check website: https://stargate.finance/transfer")
-		}
-
 		res, err := c.StargateBridgeSwapEth(ctx, &StargateBridgeSwapEthReq{
-			DestChain: req.DestChain,
-			Wallet:    req.Wallet,
-			Quantity:  req.Quantity,
-			Opt:       req.Opt,
-			Gas:       req.Gas,
+			DestChain:    req.DestChain,
+			Wallet:       req.Wallet,
+			Quantity:     req.Quantity,
+			Gas:          req.Gas,
+			EstimateOnly: req.EstimateOnly,
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "stargateBridgeSwapEth")
 		}
-		r.Tx = append(r.Tx, res.Tx)
-		_ = c.WaitTxComplete(ctx, res.Tx.Hash())
+		if res.Tx != nil {
+			r.Tx = c.NewTx(res.Tx.Hash(), CodeContract)
+		}
+		r.ECost = res.ECost
 	case v1.Token_STG:
 		limitTx, err := c.TokenLimitChecker(ctx, &TokenLimitCheckerReq{
 			Token:       req.FromToken,
 			Wallet:      req.Wallet,
-			amount:      req.Quantity,
-			SpenderAddr: c.c.Dict.Stargate.StargateRouterAddress,
+			Amount:      req.Quantity,
+			SpenderAddr: c.Cfg.TokenMap[v1.Token_STG],
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "TokenLimitChecker")
 		}
 		if limitTx.LimitExtended {
-			r.Tx = append(r.Tx, limitTx.ApproveTx)
+			r.Allowance = c.NewTx(limitTx.ApproveTx.Hash(), CodeApprove)
 		}
 
 		res, err := c.StargateBridgeSwapSTG(ctx, &StargateBridgeSwapSTGReq{
-			DestChain: req.DestChain,
-			Wallet:    req.Wallet,
-			Quantity:  req.Quantity,
-			Opt:       req.Opt,
-			Gas:       req.Gas,
+			DestChain:    req.DestChain,
+			Wallet:       req.Wallet,
+			Quantity:     req.Quantity,
+			Gas:          req.Gas,
+			EstimateOnly: req.EstimateOnly,
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "stargateBridgeSwapSTG")
 		}
-		_ = c.WaitTxComplete(ctx, res.Tx.Hash())
-		r.Tx = append(r.Tx, res.Tx)
+
+		if res.Tx != nil {
+			r.Tx = c.NewTx(res.Tx.Hash(), CodeContract)
+		}
+		r.ECost = res.ECost
 	default:
 		limitTx, err := c.TokenLimitChecker(ctx, &TokenLimitCheckerReq{
 			Token:       req.FromToken,
 			Wallet:      req.Wallet,
-			amount:      req.Quantity,
-			SpenderAddr: c.c.Dict.Stargate.StargateRouterAddress,
+			Amount:      req.Quantity,
+			SpenderAddr: c.Cfg.Dict.Stargate.StargateRouterAddress,
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "TokenLimitChecker")
 		}
 		if limitTx.LimitExtended {
-			r.Tx = append(r.Tx, limitTx.ApproveTx)
+			r.Allowance = c.NewTx(limitTx.ApproveTx.Hash(), CodeApprove)
 		}
 
 		res, err := c.StargateBridgeSwapToken(ctx, req)
 		if err != nil {
 			return nil, errors.Wrap(err, "stargateBridgeSwap")
 		}
-		_ = c.WaitTxComplete(ctx, res.Tx.Hash())
-		r.Tx = append(r.Tx, res.Tx)
+		if res.Tx != nil {
+			r.Tx = c.NewTx(res.Tx.Hash(), CodeContract)
+		}
+		r.ECost = res.ECost
 	}
 
 	return r, nil

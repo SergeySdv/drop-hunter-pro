@@ -1,12 +1,14 @@
 package ui
 
 import (
-	"crypto_scripts/internal/server/config"
 	"embed"
 	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
+
+	"github.com/hardstylez72/cry/internal/server/config"
 )
 
 //go:embed build/*
@@ -28,8 +30,23 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sub, _ := fs.Sub(ui, "build")
+	sub, err := fs.Sub(ui, "build")
+	if err != nil {
+		return
+	}
 	fs := http.FS(sub)
+
+	url := r.URL.String()
+
+	if strings.Index(url, "?") != -1 {
+		url = url[:strings.Index(url, "?")]
+	}
+
+	_, err = fs.Open(url)
+	if err != nil {
+		r.URL.Path = "/"
+		url = r.URL.String()
+	}
 
 	http.FileServer(fs).ServeHTTP(w, r)
 }

@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+import "v1/task.proto";
+
+package settings;
+option go_package = "grpc/v1";
+
+
+message Settings {
+  string user_id = 1;
+  SettingsNetwork bnb = 2;
+  SettingsNetwork optimism = 3;
+  SettingsNetwork arbitrum = 4;
+  SettingsNetwork etherium = 5;
+  SettingsNetwork polygon = 6;
+  SettingsNetwork avalanche = 7;
+  SettingsNetwork zksyncTestNet = 8;
+  SettingsNetwork zksyncMainNet = 9;
+
+  map<string, int64> taskGasLimitMap = 10;
+  SettingsNetwork zksyncLite = 11;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["bnb",
+        "optimism",
+        "arbitrum",
+        "etherium",
+        "polygon",
+        "avalanche",
+        "zksyncTestNet",
+        "zksyncMainNet",
+        "taskGasLimitMap",
+        "zksyncLite"
+      ]
+    }
+  };
+}
+
+message SettingsNetwork {
+  int64 id = 1;
+  bool use_limit_gas = 2;  //deprecated
+  string rpc_endpoint = 3;
+  optional int64 gas_total = 4;  //deprecated
+  optional double gas_multiplier = 5;
+  optional string max_gas = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "use_limit_gas", "rpc_endpoint"]
+    }
+  };
+}
+
+
+service SettingsService {
+
+  rpc Reset(ResetRequest) returns (ResetResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/settings/reset",
+      body: "*"
+    };
+  }
+
+  rpc GetNetworkByRPC(GetNetworkByRPCRequest) returns (GetNetworkByRPCResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/settings/network/rpc/validate",
+      body: "*"
+    };
+  }
+
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/settings/get",
+      body: "*"
+    };
+  }
+
+  rpc UpdateSettings(UpdateSettingsRequest) returns (UpdateSettingsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/settings/update",
+      body: "*"
+    };
+  }
+}
+
+message ResetRequest {
+
+}
+
+message ResetResponse {
+  Settings settings = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["settings"]
+    }
+  };
+}
+
+message GetNetworkByRPCResponse {
+  bool valid = 1;
+  int64 id = 2;
+  int64 suggested_gas_price = 3;
+  optional string error = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["valid", "id", "suggested_gas_price"]
+    }
+  };
+}
+
+message GetNetworkByRPCRequest {
+  string endpoint = 1;
+  shared.Network network = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["endpoint", "network"]
+    }
+  };
+}
+
+message UpdateSettingsRequest {
+  Settings settings = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["settings"]
+    }
+  };
+}
+
+message UpdateSettingsResponse {
+  Settings settings = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["settings"]
+    }
+  };
+}
+
+message GetSettingsRequest {
+
+}
+
+message GetSettingsResponse {
+  Settings settings = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["settings"]
+    }
+  };
+}
+

@@ -2,10 +2,10 @@ package poligon
 
 import (
 	"context"
-	"crypto_scripts/internal/defi"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/hardstylez72/cry/internal/defi"
 )
 
 func (c *Client) GetBalance(ctx context.Context, req *defi.GetBalanceReq) (*defi.GetBalanceRes, error) {
@@ -14,10 +14,6 @@ func (c *Client) GetBalance(ctx context.Context, req *defi.GetBalanceReq) (*defi
 
 func (c *Client) TxViewFn(id string) string {
 	return c.defi.TxViewFn(id)
-}
-
-func (c *Client) StakeSTG(ctx context.Context, req *defi.StakeSTGReq) (*defi.StakeSTGRes, error) {
-	return c.defi.StakeSTG(ctx, req)
 }
 
 func (c *Client) StargateBridgeSwap(ctx context.Context, req *defi.StargateBridgeSwapReq) (*defi.StargateBridgeSwapRes, error) {
@@ -46,4 +42,8 @@ func (c *Client) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
 
 func (c *Client) WaitTxComplete(ctx context.Context, tx common.Hash) error {
 	return c.defi.WaitTxComplete(ctx, tx)
+}
+
+func (c *Client) OrbiterBridge(ctx context.Context, req *defi.OrbiterBridgeReq) (*defi.OrbiterBridgeRes, error) {
+	return c.defi.OrbiterBridge(ctx, req)
 }

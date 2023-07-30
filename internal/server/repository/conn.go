@@ -4,12 +4,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func NewPGRepository(conn *sqlx.DB) *PGRepository {
-	return &PGRepository{
+func NewPGRepository(conn *sqlx.DB) *pgRepository {
+
+	return &pgRepository{
 		conn: conn,
 	}
 }
 
-type PGRepository struct {
+type pgRepository struct {
 	conn *sqlx.DB
 }

@@ -4,23 +4,48 @@ import (
 	"context"
 	"time"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/pkg/errors"
 )
 
-func (c *EtheriumClient) WaitTxComplete(ctx context.Context, tx common.Hash) error {
+func (c *EtheriumClient) WaitTxComplete(ctx context.Context, txId common.Hash) error {
+
+	ticker := time.NewTicker(time.Second * 10)
+	defer ticker.Stop()
+
 	for {
-		_, isPending, err := c.cli.TransactionByHash(ctx, tx)
-		if err != nil {
-			time.Sleep(time.Second * 5)
-			continue
+		tx, isPending, err := c.Cli.TransactionByHash(ctx, txId)
+		if err == nil {
+			if !isPending {
+				rec, err := bind.WaitMined(context.Background(), c.Cli, tx)
+				if err != nil {
+					return err
+				}
+
+				if rec.Status == types.ReceiptStatusFailed {
+					return errors.Wrap(ErrTxStatusFailed, "invalid status")
+				}
+			}
 		}
+
 		if isPending {
-			time.Sleep(time.Second * 5)
 			continue
 		}
 
-		break
-	}
+		if err != nil {
+			if err.Error() == "not found" {
+				return errors.Wrap(ErrTxNotFound, "blockchain error")
+			}
+		}
 
-	return nil
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-ticker.C:
+
+			return nil
+		}
+	}
 }

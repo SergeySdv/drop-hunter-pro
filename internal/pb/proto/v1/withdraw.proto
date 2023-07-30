@@ -1,0 +1,457 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+package withdrawer;
+option go_package = "grpc/v1";
+
+service WithdrawerService {
+
+  rpc OkexDepositAddrAttach(OkexDepositAddrAttachRequest) returns (OkexDepositAddrAttachResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/sub/deposit/attach",
+      body: "*"
+    };
+  }
+
+  rpc OkexDepositAddrDetach(OkexDepositAddrDetachRequest) returns (OkexDepositAddrDetachResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/sub/deposit/detach",
+      body: "*"
+    };
+  }
+
+  rpc ListDepositAddresses(ListDepositAddressesRequest) returns (ListDepositAddressesResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/sub/deposit/list",
+      body: "*"
+    };
+  }
+
+  rpc ListSubWithdrawer(ListSubWithdrawerRequest) returns (ListSubWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/sub/list",
+      body: "*"
+    };
+  }
+
+  rpc CreateSubWithdrawer(CreateOkexWithdrawerRequest) returns (CreateOkexWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/sub/add",
+      body: "*"
+    };
+  }
+  rpc CreateWithdrawer(CreateWithdrawerRequest) returns (CreateWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/add",
+      body: "*"
+    };
+  }
+
+  rpc UpdateWithdrawer(UpdateWithdrawerRequest) returns (UpdateWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/update",
+      body: "*"
+    };
+  }
+
+  rpc ListWithdrawer(ListWithdrawerRequest) returns (ListWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/list",
+      body: "*"
+    };
+  }
+
+  rpc DeleteWithdrawer(DeleteWithdrawerRequest) returns (DeleteWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/delete",
+      body: "*"
+    };
+  }
+
+  rpc GetExchangeWithdrawOptions(GetExchangeWithdrawOptionsRequest) returns (GetExchangeWithdrawOptionsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/exchange/options",
+      body: "*"
+    };
+  }
+
+  rpc GetExchangeDepositOptions(GetExchangeDepositOptionsRequest) returns (GetExchangeDepositOptionsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/exchange/deposit/options",
+      body: "*"
+    };
+  }
+
+  rpc GetWithdrawer(GetWithdrawerRequest) returns (GetWithdrawerResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/get",
+      body: "*"
+    };
+  }
+  rpc Withdraw(WithdrawReq) returns (WithdrawRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/withdraw",
+      body: "*"
+    };
+  }
+
+  rpc WithdrawStatus(WithdrawStatusReq) returns (WithdrawStatusRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdrawer/withdraw/status",
+      body: "*"
+    };
+  }
+  rpc ExportExchangeAccounts(ExportExchangeAccountsReq) returns (ExportExchangeAccountsRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/withdraw/export",
+      body: "*"
+    };
+  }
+}
+
+message ExportExchangeAccountsReq {
+
+}
+
+message ExportExchangeAccountsRes {
+  string text = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["text"]
+    }
+  };
+}
+
+message WithdrawStatusReq {
+  string withdraw_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdraw_id"]
+    }
+  };
+}
+
+message WithdrawStatusRes {
+  string status = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["status"]
+    }
+  };
+}
+
+message WithdrawReq {
+  string network = 1;
+  string token = 2;
+  string amount = 3;
+  string withdrawer_id = 4;
+  string profile_id = 5;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["network", "token", "amount", "withdrawer_id", "profile_id"]
+    }
+  };
+}
+
+message WithdrawRes {
+ string withdraw_id = 1;
+ optional string error_message = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdraw_id"]
+    }
+  };
+}
+
+message GetWithdrawerRequest {
+  string withdrawer_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id"]
+    }
+  };
+}
+
+message GetWithdrawerResponse {
+  Withdrawer withdrawer = 1;
+  optional string error = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer"]
+    }
+  };
+}
+
+message UpdateWithdrawerResponse {
+  optional string error = 1;
+}
+
+message UpdateWithdrawerRequest {
+  string withdrawer_id = 1;
+  string proxy = 2;
+  string label = 3;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id", "proxy", "label"]
+    }
+  };
+}
+
+message GetExchangeDepositOptionsRequest {
+  string withdrawer_id = 1;
+  string token = 2;
+  string network = 3;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id", "token", "network"]
+    }
+  };
+}
+
+message GetExchangeDepositOptionsResponse {
+  string addr  = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["addr"]
+    }
+  };
+}
+
+message DepositOption {
+  string addr = 1;
+  string network = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["addr", "network"]
+    }
+  };
+}
+
+message OkexDepositAddrDetachRequest {
+  string profile_id = 1;
+  string okex_deposit_addr = 2;
+  string withdrawer_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["profile_id", "okex_deposit_addr", "withdrawer_id"]
+    }
+  };
+}
+
+message OkexDepositAddrDetachResponse {
+
+}
+message OkexDepositAddrAttachRequest {
+  string profile_id = 1;
+  string okex_deposit_addr = 2;
+  string withdrawer_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["profile_id", "okex_deposit_addr", "withdrawer_id"]
+    }
+  };
+}
+
+message OkexDepositAddrAttachResponse {
+
+}
+
+message ListDepositAddressesResponse {
+  repeated DepositAddresses items = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["items"]
+    }
+  };
+}
+
+message DepositAddresses {
+  string addr = 1;
+  optional string profile_id = 2;
+  optional string tag = 3;
+  optional string profile_label = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["addr"]
+    }
+  };
+}
+
+message ListDepositAddressesRequest {
+  string withdrawer_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id"]
+    }
+  };
+}
+
+message ListSubWithdrawerRequest {
+  string withdrawer_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id"]
+    }
+  };
+}
+
+message ListSubWithdrawerResponse {
+  repeated Withdrawer withdrawers = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawers"]
+    }
+  };
+}
+
+message GetExchangeWithdrawOptionsResponse {
+  repeated ExchangeWithdrawOptions tokens = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tokens"]
+    }
+  };
+}
+
+message ExchangeWithdrawOptions {
+  string token = 1;
+  string amount = 2;
+  repeated ExchangeWithdrawNetwork networks = 3;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["token", "networks", "amount"]
+    }
+  };
+}
+
+message ExchangeWithdrawNetwork {
+  string network = 1;
+  string min_amount = 2;
+  string max_amount = 3;
+  string fee = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["network", "min_amount", "max_amount", "fee"]
+    }
+  };
+}
+
+message GetExchangeWithdrawOptionsRequest {
+  string withdrawer_id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawer_id"]
+    }
+  };
+}
+
+message ExchangeTokenBalance {
+  string token = 1;
+  string amount = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["token", "amount"]
+    }
+  };
+}
+
+enum ExchangeType {
+  Binance = 0;
+  Okex = 1;
+}
+message Withdrawer {
+  string id = 1;
+  ExchangeType exchange_type = 2;
+  string label = 3;
+  optional string proxy = 6;
+  google.protobuf.Timestamp created_at = 7;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "exchange_type", "label", "proxy", "created_at"]
+    }
+  };
+}
+
+message CreateOkexWithdrawerRequest {
+  string parent_id = 1;
+  string label = 2;
+  string secret_key = 4;
+  string api_key = 5;
+  optional string proxy = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["parent_id", "label", "secret_key", "api_key"]
+    }
+  };
+}
+
+message CreateOkexWithdrawerResponse {
+  optional string error = 1;
+}
+
+message CreateWithdrawerRequest {
+  ExchangeType exchange_type = 1;
+  string label = 2;
+  string secret_key = 4;
+  string api_key = 5;
+  optional string proxy = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["exchange_type", "label", "secret_key", "api_key"]
+    }
+  };
+}
+
+message CreateWithdrawerResponse {
+    Withdrawer withdrawer = 1;
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+      json_schema: {
+        required: ["withdrawer"]
+      }
+    };
+}
+
+message ListWithdrawerRequest {
+
+}
+
+message ListWithdrawerResponse {
+  repeated Withdrawer withdrawers = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["withdrawers"]
+    }
+  };
+}
+
+message DeleteWithdrawerRequest {
+  string id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id"]
+    }
+  };
+}
+
+message DeleteWithdrawerResponse {
+
+}

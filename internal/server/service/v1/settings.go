@@ -2,33 +2,38 @@ package v1
 
 import (
 	"context"
-	"crypto_scripts/internal/server/pb/gen/proto/go/v1"
-	"crypto_scripts/internal/server/repository"
-	settings2 "crypto_scripts/internal/server/settings"
-	"crypto_scripts/internal/server/user"
-	"crypto_scripts/internal/uniclient"
+
+	"github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
+	"github.com/hardstylez72/cry/internal/server/user"
+	settings2 "github.com/hardstylez72/cry/internal/settings"
+	"github.com/hardstylez72/cry/internal/uniclient"
 )
 
 type SettingsService struct {
 	v1.UnimplementedSettingsServiceServer
-	rep repository.SettingsRepository
+	settingsService *settings2.Service
 }
 
-func NewSettingsService(rep repository.SettingsRepository) *SettingsService {
-	return &SettingsService{rep: rep}
+func NewSettingsService(settingsService *settings2.Service) *SettingsService {
+	return &SettingsService{settingsService: settingsService}
 }
 
 func (s *SettingsService) Reset(ctx context.Context, req *v1.ResetRequest) (*v1.ResetResponse, error) {
 
-	defaultSettings, err := settings2.DefaultSettings(ctx, user.GetUserId(ctx))
+	userId, err := user.GetUserId(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := s.rep.UpdateSettings(ctx, defaultSettings); err != nil {
+	defaultSettings, err := settings2.DefaultSettings(ctx, userId)
+	if err != nil {
 		return nil, err
 	}
-	settings, err := s.rep.GetSettings(ctx, user.GetUserId(ctx))
+
+	if err := s.settingsService.UpdateSettings(ctx, defaultSettings); err != nil {
+		return nil, err
+	}
+	settings, err := s.settingsService.GetSettings(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +88,12 @@ func (s *SettingsService) GetNetworkByRPC(ctx context.Context, req *v1.GetNetwor
 }
 func (s *SettingsService) GetSettings(ctx context.Context, req *v1.GetSettingsRequest) (*v1.GetSettingsResponse, error) {
 
-	settings, err := settings2.ResolveSettingsForUser(ctx, user.GetUserId(ctx), s.rep)
+	userId, err := user.GetUserId(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	settings, err := s.settingsService.ResolveSettingsForUser(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -95,11 +105,16 @@ func (s *SettingsService) GetSettings(ctx context.Context, req *v1.GetSettingsRe
 }
 func (s *SettingsService) UpdateSettings(ctx context.Context, req *v1.UpdateSettingsRequest) (*v1.UpdateSettingsResponse, error) {
 
-	if err := s.rep.UpdateSettings(ctx, req.Settings); err != nil {
+	if err := s.settingsService.UpdateSettings(ctx, req.Settings); err != nil {
 		return nil, err
 	}
 
-	settings, err := s.rep.GetSettings(ctx, user.GetUserId(ctx))
+	userId, err := user.GetUserId(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	settings, err := s.settingsService.GetSettings(ctx, userId)
 	if err != nil {
 		return nil, err
 	}

@@ -121,7 +121,7 @@ export class SettingsService {
     options: IRequestOptions = {}
   ): Promise<GetSettingsResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/settings/get';
+      let url = basePath + '/api/gw/v1/settings/get';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -143,7 +143,7 @@ export class SettingsService {
     options: IRequestOptions = {}
   ): Promise<GetNetworkByRPCResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/settings/network/rpc/validate';
+      let url = basePath + '/api/gw/v1/settings/network/rpc/validate';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -165,7 +165,7 @@ export class SettingsService {
     options: IRequestOptions = {}
   ): Promise<ResetResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/settings/reset';
+      let url = basePath + '/api/gw/v1/settings/reset';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -187,7 +187,7 @@ export class SettingsService {
     options: IRequestOptions = {}
   ): Promise<UpdateSettingsResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/settings/update';
+      let url = basePath + '/api/gw/v1/settings/update';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -257,6 +257,18 @@ export interface Settings {
 
   /**  */
   avalanche: SettingsNetwork;
+
+  /**  */
+  zksyncTestNet: SettingsNetwork;
+
+  /**  */
+  zksyncMainNet: SettingsNetwork;
+
+  /**  */
+  taskGasLimitMap: object;
+
+  /**  */
+  zksyncLite: SettingsNetwork;
 }
 
 export interface SettingsNetwork {
@@ -271,6 +283,12 @@ export interface SettingsNetwork {
 
   /**  */
   gasTotal?: string;
+
+  /**  */
+  gasMultiplier?: number;
+
+  /**  */
+  maxGas?: string;
 }
 
 export interface UpdateSettingsRequest {
@@ -289,5 +307,9 @@ export enum Network {
   'BinanaceBNB' = 'BinanaceBNB',
   'Etherium' = 'Etherium',
   'POLIGON' = 'POLIGON',
-  'AVALANCHE' = 'AVALANCHE'
+  'AVALANCHE' = 'AVALANCHE',
+  'GOERLIETH' = 'GOERLIETH',
+  'ZKSYNCERA' = 'ZKSYNCERA',
+  'ZKSYNCERATESTNET' = 'ZKSYNCERATESTNET',
+  'ZKSYNCLITE' = 'ZKSYNCLITE'
 }

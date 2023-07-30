@@ -1,0 +1,512 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/flow.proto";
+import "v1/profile.proto";
+import "v1/shared.proto";
+import "v1/task.proto";
+
+package process;
+option go_package = "grpc/v1";
+
+message Transaction {
+  string id = 1;
+  string code = 2;
+  string task_id = 3;
+  string profile_id = 4;
+  string process_id = 5;
+  string user_id = 6;
+  google.protobuf.Timestamp created_at = 7;
+  shared.Network network = 8;
+  string url = 9;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "code", "task_id", "profile_id","process_id", "user_id", "created_at", "network", "url"]
+    }
+  };
+}
+
+message Process {
+  string id = 1;
+
+  shared.ProcessStatus status = 2;
+  repeated ProcessProfile profiles = 3;
+  string flow_id = 5;
+
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+
+  optional google.protobuf.Timestamp finished_at = 8;
+  optional google.protobuf.Timestamp started_at = 9;
+
+  string flow_label = 10;
+  int64 progress = 11;
+  optional google.protobuf.Timestamp deleted_at = 12;
+  bool auto_retry = 13;
+  flow.Flow flow = 14;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "status", "profiles", "flow_id","created_at", "updated_at", "flow_label", "progress", "auto_retry", "flow"]
+    }
+  };
+}
+
+message ProcessProfile {
+  string profile_id = 1;
+  int64 weight = 2;
+  repeated ProcessTask tasks = 3;
+  shared.ProcessStatus status = 4;
+  string id = 8;
+  string profile_label = 9;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["profile_id", "weight", "tasks", "status", "id", "profile_label"]
+    }
+  };
+}
+
+message ProcessTask {
+  flow.Task task = 1;
+  shared.ProcessStatus status = 2;
+  repeated string transactions = 3;//deprecated
+  optional google.protobuf.Timestamp finished_at = 4;
+  optional google.protobuf.Timestamp started_at = 5;
+  optional string error = 6;
+  string id = 7;
+//  bool skip = 8; todo: add
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["task", "status", "transactions", "id"]
+    }
+  };
+}
+
+message ProcessTaskHistoryRecord {
+  string id = 1;
+  string task_id = 2;
+  google.protobuf.Timestamp started_at = 3;
+  optional google.protobuf.Timestamp finished_at = 4;
+  shared.ProcessStatus start_status = 5;
+  optional shared.ProcessStatus finish_status = 6;
+  optional string msg = 7;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "task_id", "started_at", "start_status"]
+    }
+  };
+}
+
+
+service ProcessService {
+  rpc EnableAutoRetry(EnableAutoRetryRequest) returns (EnableAutoRetryResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/auto-retry/enable",
+      body: "*"
+    };
+  }
+  rpc DisableAutoRetry(DisableAutoRetryRequest) returns (DisableAutoRetryResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/auto-retry/disable",
+      body: "*"
+    };
+  }
+  rpc SkipProcessTask(SkipProcessTaskRequest) returns (SkipProcessTaskResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/task/skip",
+      body: "*"
+    };
+  }
+  rpc StopProcess(StopProcessRequest) returns (StopProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/stop",
+      body: "*"
+    };
+  }
+  rpc ResumeProcess(ResumeProcessRequest) returns (ResumeProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/resume",
+      body: "*"
+    };
+  }
+  rpc CancelProcess(CancelProcessRequest) returns (CancelProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/cancel",
+      body: "*"
+    };
+  }
+
+  rpc CreateProcess(CreateProcessRequest) returns (CreateProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/create",
+      body: "*"
+    };
+  }
+
+  rpc GetProcessTaskHistory(GetProcessTaskHistoryRequest) returns (GetProcessTaskHistoryResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/task/history",
+      body: "*"
+    };
+  }
+
+  rpc GetProcess(GetProcessRequest) returns (GetProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/get",
+      body: "*"
+    };
+  }
+
+  rpc GetProcessUpdatedAt(GetProcessUpdatedAtRequest) returns (GetProcessUpdatedAtResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/updatedAt",
+      body: "*"
+    };
+  }
+
+  rpc ListProcess(ListProcessRequest) returns (ListProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/list",
+      body: "*"
+    };
+  }
+
+  rpc RetryProcess(RetryProcessRequest) returns (RetryProcessResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/retry",
+      body: "*"
+    };
+  }
+
+  rpc EstimateCost(EstimateCostRequest) returns (EstimateCostResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/estimate-cost",
+      body: "*"
+    };
+  }
+
+  rpc GetTaskSettings(GetTaskSettingsRequest) returns (GetTaskSettingsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/task/settings",
+      body: "*"
+    };
+  }
+
+  rpc SetTaskSettings(SetTaskSettingsRequest) returns (SetTaskSettingsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/task/settings/set",
+      body: "*"
+    };
+  }
+
+  rpc GetTaskTransactions(GetTaskTransactionsReq) returns (GetTaskTransactionsRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/task/transactions",
+      body: "*"
+    };
+  }
+
+  rpc GetProfileTransactions(GetProfileTransactionsReq) returns (GetProfileTransactionsRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/process/profile/transactions",
+      body: "*"
+    };
+  }
+}
+
+message GetProfileTransactionsReq {
+  string profile_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["profile_id"]
+    }
+  };
+}
+
+message GetProfileTransactionsRes {
+  repeated Transaction transactions = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["transactions"]
+    }
+  };
+}
+
+
+message GetTaskTransactionsReq {
+  string task_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["task_id"]
+    }
+  };
+}
+
+message GetTaskTransactionsRes {
+  repeated Transaction transactions = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["transactions"]
+    }
+  };
+}
+
+message SetTaskSettingsRequest {
+  int64 wei = 1;
+  task.TaskType task_type = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["wei", "task_type"]
+    }
+  };
+}
+
+message SetTaskSettingsResponse {
+
+}
+
+message GetTaskSettingsRequest {
+  task.TaskType task_type = 1;
+  shared.Network network = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["task_type", "network"]
+    }
+  };
+}
+
+message GetTaskSettingsResponse {
+  optional shared.AmUni gas_limit = 1;
+}
+
+message EstimateCostRequest {
+  string process_id = 1;
+  string profile_id = 2;
+  string task_id = 3;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id", "profile_id", "task_id"]
+    }
+  };
+}
+
+message EstimateCostResponse {
+  optional string error = 1;
+  optional EstimationTx data = 2;
+}
+
+message EstimationTx {
+  shared.AmUni balance = 1;
+  shared.AmUni value = 2;
+  shared.AmUni gas = 3;
+  shared.AmUni gas_limit = 4;
+  shared.AmUni gas_price = 5;
+  string gasValuePercent = 6;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["balance", "value", "gas", "gas_limit", "gas_price", "gasValuePercent"]
+    }
+  };
+}
+
+message CancelProcessRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+message DisableAutoRetryRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+message EnableAutoRetryRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+message DisableAutoRetryResponse {
+
+}
+message EnableAutoRetryResponse {
+
+}
+
+message CancelProcessResponse {
+
+}
+message SkipProcessTaskResponse{}
+message SkipProcessTaskRequest{
+  string task_id = 1;
+  string process_id = 2;
+  string profile_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["task_id", "process_id", "profile_id"]
+    }
+  };
+}
+
+message GetProcessTaskHistoryRequest {
+  string task_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["task_id"]
+    }
+  };
+}
+
+message GetProcessTaskHistoryResponse {
+  repeated ProcessTaskHistoryRecord records = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["records"]
+    }
+  };
+}
+
+message StopProcessRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+message ResumeProcessRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+message ResumeProcessResponse {
+
+}
+
+message StopProcessResponse {
+}
+
+
+message GetProcessUpdatedAtRequest {
+  string process_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id"]
+    }
+  };
+}
+
+
+message GetProcessUpdatedAtResponse {
+  google.protobuf.Timestamp updated_at = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["updated_at"]
+    }
+  };
+}
+
+
+message RetryProcessRequest {
+  string process_id = 1;
+  string profile_id = 2;
+  string task_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id", "profile_id", "task_id"]
+    }
+  };
+}
+
+message RetryProcessResponse {
+
+}
+
+message ListProcessRequest {
+  repeated shared.ProcessStatus statuses = 1;
+  int64 offset = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["statuses", "offset"]
+    }
+  };
+}
+
+
+message ListProcessResponse {
+  repeated Process processes = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["processes"]
+    }
+  };
+}
+
+message GetProcessRequest {
+  string id = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id"]
+    }
+  };
+}
+
+message GetProcessResponse {
+    Process process = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process"]
+    }
+  };
+}
+
+message CreateProcessRequest {
+  string flow_id = 1;
+  repeated string profile_ids = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["flow_id", "profile_ids"]
+    }
+  };
+}
+
+message CreateProcessResponse {
+  Process process = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process"]
+    }
+  };
+}
+
+
+
+
+
+

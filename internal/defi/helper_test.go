@@ -2,49 +2,80 @@ package defi
 
 import (
 	"math/big"
-	"reflect"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTokenAmountFloatToWEI(t *testing.T) {
+func TestRoll(t *testing.T) {
 	type args struct {
-		a float64
+		a *RollArg
 	}
 	tests := []struct {
 		name string
 		args args
-		want *big.Int
+		want RollRet
 	}{
 		{
-			name: "",
+			name: "balance >>> Amount",
 			args: args{
-				1,
+				a: &RollArg{
+					MinerGas: big.NewInt(1),
+					GasExt:   big.NewInt(1),
+					Balance:  big.NewInt(10),
+					Amount:   big.NewInt(2),
+				},
 			},
-			want: big.NewInt(0).Mul(big.NewInt(1), big.NewInt(params.Ether)),
+			want: RollRet{
+				Value:  big.NewInt(3),
+				Amount: big.NewInt(2),
+			},
 		},
 		{
-			name: "",
+			name: "balance <<< Amount",
 			args: args{
-				1.23456,
+				a: &RollArg{
+					MinerGas: big.NewInt(1),
+					GasExt:   big.NewInt(1),
+					Balance:  big.NewInt(10),
+					Amount:   big.NewInt(20),
+				},
 			},
-			want: big.NewInt(0).Mul(big.NewInt(123456), big.NewInt(params.Ether*10e-5)),
+			want: RollRet{
+				Value:  big.NewInt(9),
+				Amount: big.NewInt(8),
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := TokenAmountFloatToWEI(tt.args.a); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("TokenAmountFloatToWEI() = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, Roll(tt.args.a), "Roll(%v)", tt.args.a)
 		})
 	}
 }
 
-func TestConv(t *testing.T) {
-	a := TokenAmountFloatToWEI(29)
-	b := TokenAmountToWEI(29)
-
-	assert.True(t, a.Cmp(b) == 0)
+func TestEthToUsd(t *testing.T) {
+	type args struct {
+		e     *big.Float
+		price float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *big.Float
+	}{
+		{
+			name: "",
+			args: args{
+				e:     big.NewFloat(0.001),
+				price: 2000,
+			},
+			want: big.NewFloat(2),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, EthToUsd(tt.args.e, tt.args.price), "EthToUsd(%v, %v)", tt.args.e, tt.args.price)
+		})
+	}
 }

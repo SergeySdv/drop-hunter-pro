@@ -3,7 +3,6 @@ package defi
 import (
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 )
 
@@ -13,30 +12,45 @@ func ErrGasHigh(want, have *big.Int) error {
 	return errors.Wrap(ErrUserGasLimitToLow, " want:"+want.String()+" have: "+have.String())
 }
 
-func (c *EtheriumClient) ResolveGasPrice(limit *GasLimit, tx *types.Transaction) *big.Int {
-	if limit == nil {
-		limit = c.c.GasLimit
+func MinerGasLegacy(gasPrice *big.Int, gasLimit uint64) *big.Int {
+	return big.NewInt(0).Mul(gasPrice, big.NewInt(0).SetUint64(gasLimit))
+}
+
+func MinerGas(baseFee, priorityFee *big.Int, gasLimit uint64) *big.Int {
+
+	gasPrice := new(big.Int).Add(baseFee, priorityFee)
+
+	return new(big.Int).Mul(gasPrice, new(big.Int).SetUint64(gasLimit))
+}
+
+func ResolveGasPriceZksync(gasMax, gas, price *big.Int) *big.Int {
+	if gasMax == nil {
+		gasMax = big.NewInt(0)
+	}
+	if gasMax.Cmp(big.NewInt(0)) == 0 {
+		return price
+	}
+	estimatedGas := new(big.Int).Mul(gas, price)
+
+	if estimatedGas.Cmp(gasMax) > 0 {
+		return new(big.Int).Div(gasMax, price)
 	}
 
-	if limit == nil {
-		return nil
+	return price
+}
+
+func ResolveGasPriceLayerZero(gasMax, gas, price *big.Int) *big.Int {
+	if gasMax == nil {
+		gasMax = big.NewInt(0)
+	}
+	if gasMax.Cmp(big.NewInt(0)) == 0 {
+		return price
+	}
+	estimatedGas := new(big.Int).Mul(gas, price)
+
+	if estimatedGas.Cmp(gasMax) > 0 {
+		return new(big.Int).Div(gasMax, price)
 	}
 
-	println("limit.TotalGas", limit.TotalGas.String())
-	println("network.gasPrice", tx.GasPrice().String())
-	if limit.TotalGas != nil && limit.TotalGas.Cmp(big.NewInt(0)) == 1 {
-
-		gasLimitPrice := big.NewInt(int64(tx.Gas()))
-		gasPrice := tx.GasPrice()
-		totalPrice := big.NewInt(0).Mul(gasLimitPrice, gasPrice)
-
-		println("network.total", totalPrice.String())
-
-		// цена газа выше заданной
-		if totalPrice.Cmp(limit.TotalGas) == 1 {
-			return big.NewInt(0).Quo(limit.TotalGas, gasLimitPrice)
-		}
-	}
-
-	return tx.GasPrice()
+	return price
 }

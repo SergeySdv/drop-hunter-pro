@@ -6,13 +6,13 @@ import (
 )
 
 func (c *EtheriumClient) GetNetworkId(ctx context.Context) (*big.Int, error) {
-	id, err := c.cli.NetworkID(ctx)
+	id, err := c.Cli.NetworkID(ctx)
 	if err != nil {
 		return nil, err
 	}
-	c.c.networkId = id
+	c.Cfg.networkId = id
 	return id, nil
 }
 func (c *EtheriumClient) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
-	return c.cli.SuggestGasPrice(ctx)
+	return c.Cli.SuggestGasPrice(ctx)
 }

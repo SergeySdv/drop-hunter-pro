@@ -2,9 +2,10 @@ package binance
 
 import (
 	"context"
-	"crypto_scripts/internal/exchange"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"time"
+
+	"github.com/hardstylez72/cry/internal/exchange"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 )
 
 type Adapter struct {
@@ -36,7 +37,7 @@ func (a *Adapter) GetExchangeWithdrawOptions(ctx context.Context, req *v1.GetExc
 
 		amount, tokenHasBalance := assets[o.Token]
 		if !tokenHasBalance {
-			continue
+			amount = "0"
 		}
 
 		for _, n := range o.Networks {
@@ -78,4 +79,20 @@ func (a *Adapter) Withdraw(ctx context.Context, req *exchange.WithdrawRequest) (
 
 func (a *Adapter) WaitConfirm(ctx context.Context, id exchange.WithdrawId) (*string, error) {
 	return a.s.WithdrawsPending(ctx, id, time.Second*10)
+}
+
+func (s *Adapter) WithdrawStatus(ctx context.Context, withdrawId string) (string, error) {
+	return s.s.WithdrawStatus(ctx, withdrawId)
+}
+func (a *Adapter) Ping(ctx context.Context) error {
+	_, err := a.s.cli.NewGetUserAsset().Do(ctx)
+	return err
+}
+
+func (a *Adapter) GetDepositAddr(ctx context.Context, network, coin string) (string, error) {
+	return a.s.GetDepositAddr(ctx, network, coin)
+}
+
+func (a *Adapter) GetBalance(ctx context.Context, coin string) (float64, error) {
+	return a.s.getUserAsset(ctx, coin)
 }

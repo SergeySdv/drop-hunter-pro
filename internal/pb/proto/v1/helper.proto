@@ -1,0 +1,293 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+import "v1/task.proto";
+
+package helper;
+option go_package = "grpc/v1";
+
+service HelperService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/user",
+      body: "*"
+    };
+  }
+  rpc EstimateStargateBridgeFee(EstimateStargateBridgeFeeRequest) returns (EstimateStargateBridgeFeeResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/helper/stargate-bridge-fee/estimate",
+      body: "*"
+    };
+  }
+  rpc ValidatePK(ValidatePKRequest) returns (ValidatePKResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/helper/validatePK",
+      body: "*"
+    };
+  }
+  rpc ValidateProxy(ValidateProxyRequest) returns (ValidateProxyResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/helper/validateProxy",
+      body: "*"
+    };
+  }
+  rpc CastWEI(CastWEIRequest) returns (CastWEIResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/helper/cast-wei",
+      body: "*"
+    };
+  }
+  rpc GetBillingHistory(GetBillingHistoryReq) returns (GetBillingHistoryRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/billing/history",
+      body: "*"
+    };
+  }
+  rpc CreateOrder(CreateOrderReq) returns (CreateOrderRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/billing/order/create",
+      body: "*"
+    };
+  }
+  rpc GetOrderStatus(GetOrderStatusReq) returns (GetOrderStatusRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/billing/order/status",
+      body: "*"
+    };
+  }
+  rpc GetOrderHistory(GetOrderHistoryReq) returns (GetOrderHistoryRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/billing/order/history",
+      body: "*"
+    };
+  }
+  rpc TransactionsDailyImpact(TransactionsDailyImpactReq) returns (TransactionsDailyImpactRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/impact/daily",
+      body: "*"
+    };
+  }
+}
+
+message TransactionsDailyImpactReq {
+
+}
+
+message TransactionsDailyImpactRes {
+  int64 my_impact = 1;
+  int64 total_impact = 2;
+  int64 top_impact = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["my_impact", "total_impact", "top_impact"]
+    }
+  };
+}
+
+
+message GetOrderHistoryReq {
+}
+
+message GetOrderHistoryRes {
+  repeated Order orders = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["orders"]
+    }
+  };
+}
+
+message Order {
+  string id = 1;
+  string net = 2;
+  string coin_addr_url = 3;
+  string status = 4;
+  int64 created_at = 5;
+  int64 confirmed_at = 6;
+  double am = 7;
+  string to_wallet = 8;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "net", "coin_addr_url", "status", "created_at", "confirmed_at", "am", "to_wallet"]
+    }
+  };
+}
+
+message GetOrderStatusReq {
+  string order_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["order_id", "user_id"]
+    }
+  };
+}
+
+message GetOrderStatusRes {
+  string status = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["status"]
+    }
+  };
+}
+
+message CreateOrderReq {
+  string user_id = 1;
+  int64 am = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["am"]
+    }
+  };
+}
+
+message CreateOrderRes {
+  string id = 1;
+  string coin_addr_url = 2;
+  double am = 3;
+  string to_wallet = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "coin_addr_url", "am", "to_wallet"]
+    }
+  };
+}
+
+message GetBillingHistoryReq {
+  int64 offset = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["offset"]
+    }
+  };
+}
+
+message GetBillingHistoryRes {
+  repeated TaskHistoryRecord records = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["records"]
+    }
+  };
+}
+
+message TaskHistoryRecord {
+  string process_id = 1;
+  string task_id = 3;
+  string task_type = 4;
+  double task_price = 5;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["process_id", "task_type", "task_price", "task_id"]
+    }
+  };
+}
+
+message CastWEIRequest {
+  string wei = 1;
+  shared.Network network = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["wei", "network"]
+    }
+  };
+}
+
+message CastWEIResponse {
+  shared.AmUni am = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["am"]
+    }
+  };
+}
+
+message GetUserRequest {
+
+}
+
+message GetUserResponse {
+  string id = 1;
+  string email = 2;
+  string funds = 3;
+  string task_price = 4;
+  repeated task.TaskType payable_tasks = 5;
+  repeated task.TaskType nonpayable_tasks = 6;
+
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id", "email", "funds", "task_price", "payable_tasks", "nonpayable_tasks"]
+    }
+  };
+}
+
+message ValidatePKRequest {
+  string pk = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["pk"]
+    }
+  };
+}
+
+message EstimateStargateBridgeFeeRequest {
+  shared.Network from = 1;
+  shared.Network to = 2;
+  string profile_id = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["from", "to", "profile_id"]
+    }
+  };
+}
+
+message EstimateStargateBridgeFeeResponse {
+  int64 wei = 1;
+  string usd = 2;
+  string eth = 3;
+  optional string error = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["wei", "usd", "eth"]
+    }
+  };
+}
+
+message ValidatePKResponse {
+  bool valid = 1;
+  optional string wallet_id = 2;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["valid"]
+    }
+  };
+}
+
+message ValidateProxyRequest {
+  string proxy = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["proxy"]
+    }
+  };
+}
+
+message ValidateProxyResponse {
+  bool valid = 1;
+  string error_message = 2;
+  string country_name = 3;
+  string countryCode = 4;
+  string ip = 5;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["valid", "countryName", "countryCode", "ip", "error_message"]
+    }
+  };
+}

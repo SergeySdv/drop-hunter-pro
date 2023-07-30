@@ -24,9 +24,10 @@ func RandFloatRange(min, max float64) float64 {
 func RandDurationRange(min, max time.Duration) time.Duration {
 	mini := int64(min)
 	maxi := int64(max)
-	if maxi-mini == 0 {
+	if maxi-mini <= 0 {
 		return time.Duration(mini)
 	}
+
 	d := mini + rand.New(s).Int63n(maxi-mini)
 	delay := time.Duration(d)
 	return delay

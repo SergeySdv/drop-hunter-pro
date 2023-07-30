@@ -121,7 +121,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<CreateProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/add';
+      let url = basePath + '/api/gw/v1/profile/add';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -143,7 +143,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<GetBalanceResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/balance';
+      let url = basePath + '/api/gw/v1/profile/balance';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -165,7 +165,51 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<DeleteProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/delete';
+      let url = basePath + '/api/gw/v1/profile/delete';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  profileServiceExportProfiles(
+    params: {
+      /**  */
+      body: ExportProfilesReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<ExportProfilesRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/profile/export';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  profileServiceGenerateProfiles(
+    params: {
+      /**  */
+      body: GenerateProfilesReq;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<GenerateProfilesRes> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/profile/generate';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -187,7 +231,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<GetProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/get';
+      let url = basePath + '/api/gw/v1/profile/get';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -209,7 +253,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<ValidateLabelResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/label/validate';
+      let url = basePath + '/api/gw/v1/profile/label/validate';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -231,7 +275,29 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<ListProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/list';
+      let url = basePath + '/api/gw/v1/profile/list';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+  /**
+   *
+   */
+  profileServiceSearchProfilesNotConnectedToOkexDeposit(
+    params: {
+      /**  */
+      body: SearchProfilesNotConnectedToOkexDepositRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<SearchProfilesNotConnectedToOkexDepositResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/profile/not_connected_okex/search';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -253,7 +319,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<SearchProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/search';
+      let url = basePath + '/api/gw/v1/profile/search';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -275,7 +341,7 @@ export class ProfileService {
     options: IRequestOptions = {}
   ): Promise<UpdateProfileResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/profile/update';
+      let url = basePath + '/api/gw/v1/profile/update';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -330,6 +396,23 @@ export interface DeleteProfileRequest {
 }
 
 export interface DeleteProfileResponse {}
+
+export interface ExportProfilesReq {}
+
+export interface ExportProfilesRes {
+  /**  */
+  text: string;
+}
+
+export interface GenerateProfilesReq {
+  /**  */
+  count: string;
+}
+
+export interface GenerateProfilesRes {
+  /**  */
+  text: string;
+}
 
 export interface GetBalanceRequest {
   /**  */
@@ -390,6 +473,15 @@ export interface Profile {
 
   /**  */
   okexAccount?: OkexAccount;
+
+  /**  */
+  userAgent: string;
+
+  /**  */
+  num: string;
+
+  /**  */
+  deletedAt?: Date;
 }
 
 export interface SearchProfileRequest {
@@ -398,6 +490,13 @@ export interface SearchProfileRequest {
 }
 
 export interface SearchProfileResponse {
+  /**  */
+  profiles: Profile[];
+}
+
+export interface SearchProfilesNotConnectedToOkexDepositRequest {}
+
+export interface SearchProfilesNotConnectedToOkexDepositResponse {
   /**  */
   profiles: Profile[];
 }
@@ -417,6 +516,9 @@ export interface UpdateProfileRequest {
 
   /**  */
   label: string;
+
+  /**  */
+  userAgent: string;
 }
 
 export interface UpdateProfileResponse {
@@ -443,7 +545,11 @@ export enum Network {
   'BinanaceBNB' = 'BinanaceBNB',
   'Etherium' = 'Etherium',
   'POLIGON' = 'POLIGON',
-  'AVALANCHE' = 'AVALANCHE'
+  'AVALANCHE' = 'AVALANCHE',
+  'GOERLIETH' = 'GOERLIETH',
+  'ZKSYNCERA' = 'ZKSYNCERA',
+  'ZKSYNCERATESTNET' = 'ZKSYNCERATESTNET',
+  'ZKSYNCLITE' = 'ZKSYNCLITE'
 }
 
 export enum Token {
@@ -453,5 +559,14 @@ export enum Token {
   'STG' = 'STG',
   'BNB' = 'BNB',
   'MATIC' = 'MATIC',
-  'AVAX' = 'AVAX'
+  'AVAX' = 'AVAX',
+  'veSTG' = 'veSTG',
+  'WETH' = 'WETH',
+  'LUSD' = 'LUSD',
+  'LSD' = 'LSD',
+  'MUTE' = 'MUTE',
+  'MAV' = 'MAV',
+  'SPACE' = 'SPACE',
+  'VC' = 'VC',
+  'IZI' = 'IZI'
 }

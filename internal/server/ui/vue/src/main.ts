@@ -1,9 +1,3 @@
-/**
- * main.ts
- *
- * Bootstraps Vuetify and other plugins then mounts the App`
- */
-
 // Components
 import App from './App.vue'
 
@@ -14,13 +8,16 @@ import {createApp} from 'vue'
 import Notifications from '@kyvg/vue3-notification'
 import vuetify from "@/plugins/vuetify";
 import router from "@/router";
-import pinia from "@/store";
+
+import '@mdi/font/css/materialdesignicons.css'
+import {pinia} from "@/plugins/pinia";
+
 
 const app = createApp(App)
   .use(vuetify)
   .use(router)
-  .use(pinia)
   .use(Notifications)
+  .use(pinia)
 
 
 app.mount('#app')

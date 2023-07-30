@@ -2,13 +2,12 @@ package defi
 
 import (
 	"context"
-	"crypto_scripts/internal/defi/contracts/erc_20"
-	"crypto_scripts/internal/lib"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/hardstylez72/cry/internal/defi/contracts/erc_20"
 	"github.com/pkg/errors"
 )
 
@@ -16,6 +15,7 @@ type AllowedReq struct {
 	Token       Token
 	WalletAddr  common.Address
 	SpenderAddr common.Address
+	Retry       int
 }
 
 type AllowedRes struct {
@@ -23,18 +23,16 @@ type AllowedRes struct {
 }
 
 func (c *EtheriumClient) TokenAllowed(ctx context.Context, req *AllowedReq) (*AllowedRes, error) {
-	return lib.Retry[*AllowedReq, *AllowedRes](ctx, c.tokenAllowed, req, &lib.RetryOpt{
-		RetryCount: RetryMax,
-	})
+	return c.tokenAllowed(ctx, req)
 }
 func (c *EtheriumClient) tokenAllowed(ctx context.Context, req *AllowedReq) (*AllowedRes, error) {
 
-	addr, ok := c.c.TokenMap[req.Token]
+	addr, ok := c.Cfg.TokenMap[req.Token]
 	if !ok {
-		return nil, errTokenNotSupported(req.Token)
+		return nil, NewErrTokenNotSupported(req.Token)
 	}
 
-	caller, err := erc_20.NewStorageCaller(addr, c.cli)
+	caller, err := erc_20.NewStorageCaller(addr, c.Cli)
 	if err != nil {
 		return nil, errors.Wrap(err, "stg.NewStgCaller")
 	}
@@ -51,18 +49,20 @@ func (c *EtheriumClient) tokenAllowed(ctx context.Context, req *AllowedReq) (*Al
 type ApproveReq struct {
 	Token       Token
 	Wallet      *WalletTransactor
-	amount      *big.Int
+	Amount      *big.Int
 	SpenderAddr common.Address
+	Retry       int
 }
 
 type ApproveRes struct {
-	Tx *types.Transaction
+	Tx     *types.Transaction
+	TxHash common.Hash
 }
 
 type TokenLimitCheckerReq struct {
 	Token       Token
 	Wallet      *WalletTransactor
-	amount      *big.Int
+	Amount      *big.Int
 	SpenderAddr common.Address
 }
 
@@ -77,18 +77,6 @@ func (c *EtheriumClient) TokenLimitChecker(ctx context.Context, req *TokenLimitC
 		ApproveTx:     nil,
 	}
 
-	b, err := c.GetBalance(ctx, &GetBalanceReq{
-		WalletAddress: req.Wallet.WalletAddr,
-		Token:         req.Token,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	if b.WEI.Cmp(req.amount) == -1 {
-		return nil, errors.New("not enough ballance to approve token: " + string(req.Token))
-	}
-
 	allowed, err := c.TokenAllowed(ctx, &AllowedReq{
 		Token:       req.Token,
 		WalletAddr:  req.Wallet.WalletAddr,
@@ -98,11 +86,11 @@ func (c *EtheriumClient) TokenLimitChecker(ctx context.Context, req *TokenLimitC
 		return nil, err
 	}
 
-	if req.amount.Cmp(allowed.Allowance) == 1 {
+	if req.Amount.Cmp(allowed.Allowance) == 1 {
 		tx, err := c.TokenApprove(ctx, &ApproveReq{
 			Token:       req.Token,
 			Wallet:      req.Wallet,
-			amount:      req.amount,
+			Amount:      req.Amount,
 			SpenderAddr: req.SpenderAddr,
 		})
 		if err != nil {
@@ -118,9 +106,7 @@ func (c *EtheriumClient) TokenLimitChecker(ctx context.Context, req *TokenLimitC
 }
 
 func (c *EtheriumClient) TokenApprove(ctx context.Context, req *ApproveReq) (*ApproveRes, error) {
-	return lib.Retry[*ApproveReq, *ApproveRes](ctx, c.tokenApprove, req, &lib.RetryOpt{
-		RetryCount: RetryMax,
-	})
+	return c.tokenApprove(ctx, req)
 }
 
 func (r *ApproveReq) Validate(c *ClientConfig) error {
@@ -131,11 +117,11 @@ func (r *ApproveReq) Validate(c *ClientConfig) error {
 
 	_, ok := c.TokenMap[r.Token]
 	if !ok {
-		return errTokenNotSupported(r.Token)
+		return NewErrTokenNotSupported(r.Token)
 	}
 
-	if r.amount.Cmp(big.NewInt(0)) == 0 {
-		return errors.New("zero amount")
+	if r.Amount.Cmp(big.NewInt(0)) == 0 {
+		return errors.New("zero Amount")
 	}
 
 	return nil
@@ -143,18 +129,18 @@ func (r *ApproveReq) Validate(c *ClientConfig) error {
 
 func (c *EtheriumClient) tokenApprove(ctx context.Context, req *ApproveReq) (*ApproveRes, error) {
 
-	if err := req.Validate(c.c); err != nil {
+	if err := req.Validate(c.Cfg); err != nil {
 		return nil, err
 	}
 
-	addr := c.c.TokenMap[req.Token]
+	addr := c.Cfg.TokenMap[req.Token]
 
-	caller, err := erc_20.NewStorageTransactor(addr, c.cli)
+	caller, err := erc_20.NewStorageTransactor(addr, c.Cli)
 	if err != nil {
 		return nil, errors.Wrap(err, "stg.NewStgCaller")
 	}
 
-	chainID, err := c.cli.ChainID(ctx)
+	chainID, err := c.Cli.ChainID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +151,7 @@ func (c *EtheriumClient) tokenApprove(ctx context.Context, req *ApproveReq) (*Ap
 	}
 	opt.Context = ctx
 
-	tx, err := caller.Approve(opt, req.SpenderAddr, req.amount)
+	tx, err := caller.Approve(opt, req.SpenderAddr, req.Amount)
 	if err != nil {
 		return nil, errors.Wrap(err, "caller.Allowance")
 	}

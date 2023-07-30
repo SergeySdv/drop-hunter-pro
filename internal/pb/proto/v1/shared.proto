@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+package shared;
+option go_package = "grpc/v1";
+
+enum Network {
+  ARBITRUM = 0;
+  OPTIMISM = 1;
+  BinanaceBNB = 2;
+  Etherium = 3;
+  POLIGON = 4;
+  AVALANCHE = 5;
+  GOERLIETH = 6;
+  ZKSYNCERA = 7;
+  ZKSYNCERATESTNET = 8;
+  ZKSYNCLITE = 9;
+}
+
+enum Token {
+  USDT = 0;
+  ETH = 1;
+  USDC = 2;
+  STG = 3;
+  BNB = 4;
+  MATIC = 5;
+  AVAX = 6;
+  veSTG = 7;
+  WETH = 8;
+  LUSD = 9;
+  LSD = 10;
+  MUTE = 11;
+  MAV = 12;
+  SPACE = 13;
+  VC = 14;
+  IZI = 15;
+}
+
+enum ProcessStatus {
+  StatusReady = 0;
+  StatusRunning = 1;
+  StatusError = 2;
+  StatusDone = 3;
+  StatusStop = 4; // delete
+  StatusRetry = 5;
+}
+
+enum ProfileAccountType {
+  AccountDiscord = 0;
+  AccountOkex = 1;
+  AccountEmail = 2;
+}
+
+message AmUni {
+  string gwei = 1;
+  string eth = 2;
+  string usd = 3;
+  shared.Network network = 4;
+  string wei = 5;
+}
+
+enum AmountType {
+  All = 0;
+  Percent = 1;
+  Value = 2;
+}
+
+message Amount {
+  oneof kind {
+    bool send_all = 4;
+    float send_percent = 5;
+    float send_amount = 6;//deprecated
+    string send_value = 10;
+  }
+  optional shared.AmUni send = 7;
+  optional shared.AmUni balance = 8;
+  optional shared.AmUni gas_estimated = 9;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: [
+        "kind"
+      ]
+    }
+  };
+}

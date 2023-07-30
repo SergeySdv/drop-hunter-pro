@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :type="show1 ? 'text' : 'password'"
     ref="proxy-input"
     label="SOCKS5 proxy in format <ip:port:login:password>"
     :messages="proxyStat"
@@ -10,6 +11,8 @@
     variant="outlined"
     :loading="proxyLoading"
     :disabled="proxyLoading"
+    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+    @click:append="show1 = !show1"
   ></v-text-field>
 </template>
 
@@ -17,7 +20,7 @@
 
 import {defineComponent} from 'vue';
 import {helperService} from "@/generated/services"
-import {Delay} from "@/components/helper";
+import {Timer} from "@/components/helper";
 
 export default defineComponent({
   name: "ProxyInput",
@@ -45,7 +48,8 @@ export default defineComponent({
   },
   data() {
     return {
-      // proxy: "",
+      show1: false,
+      timer: new Timer(),
       proxyStat: "",
       proxyLoading: false,
     }
@@ -62,12 +66,16 @@ export default defineComponent({
           if (!this.proxy) {
             return true
           }
-          const res = await helperService.helperServiceValidateProxy({body: {proxy: this.proxy}})
-          if (res.valid) {
-            this.proxyStat = `${res.ip} ${res.countryName} [${res.countryCode}]`
-            return true
-          } else {
-            return res.errorMessage
+          try {
+            const res = await helperService.helperServiceValidateProxy({body: {proxy: this.proxy}})
+            if (res.valid) {
+              this.proxyStat = `${res.ip} ${res.countryName} [${res.countryCode}]`
+              return true
+            } else {
+              return res.errorMessage
+            }
+          } catch (e) {
+            return 'invalid proxy'
           }
         }
       ]
@@ -80,18 +88,16 @@ export default defineComponent({
       return valid
     },
     async proxyChanged() {
-      const snapshot = this.proxy
-      await Delay(1000)
-      if (snapshot === this.proxy) {
-        return
-      }
 
-      this.proxyLoading = true
-      if (!await this.validateProxy()) {
+      this.timer.add(1000)
+      this.timer.cb(async () => {
+        this.proxyLoading = true
+        if (!await this.validateProxy()) {
+          this.proxyLoading = false
+          return
+        }
         this.proxyLoading = false
-        return
-      }
-      this.proxyLoading = false
+      })
     },
   }
 })

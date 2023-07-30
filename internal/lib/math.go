@@ -33,7 +33,7 @@ func RoundFloat(v float64, prec int) float64 {
 		switch s {
 		case '0':
 			if afterDot && first != -1 {
-				res = res[:first+1]
+				res = res[:i+1]
 				fl, _ := StringToFloat(res)
 				return fl
 			}

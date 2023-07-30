@@ -1,11 +1,12 @@
 <template>
-  <v-btn :loading="loading" class="mr-2" v-if="processCanBeStopped()" :density="size"
+  <v-btn :loading="loading" v-if="processCanBeStopped() && !errorHappen()" :density="size"
          @click="Stop(item.id)"
          color="orange">Stop
   </v-btn>
-  <v-btn v-else-if="item.status !== ProcessStatus.StatusDone" :loading="loading" class="mr-2" :density="size"
+  <v-btn v-else-if="item.status !== ProcessStatus.StatusDone && !errorHappen()" :loading="loading"
+         :density="size"
          @click="Resume(item.id)" color="green">
-    {{ processNotStarted() ? "start" : "resume" }}
+    {{ processNotStarted() ? "Start" : "Resume" }}
   </v-btn>
 </template>
 
@@ -40,8 +41,14 @@ export default defineComponent({
     },
   },
   methods: {
-
+    errorHappen(): boolean {
+      if (this.item.status === ProcessStatus.StatusError) {
+        return true
+      }
+      return false
+    },
     processCanBeStopped(): boolean {
+
       if (this.item.status === ProcessStatus.StatusStop) {
         return false
       }
@@ -66,7 +73,6 @@ export default defineComponent({
         await processService.processServiceStopProcess({body: {processId: id}})
         this.$emit("updated")
       } finally {
-        await Delay(1000)
         this.loading = false
       }
     },
@@ -76,7 +82,6 @@ export default defineComponent({
         await processService.processServiceResumeProcess({body: {processId: id}})
         this.$emit("updated")
       } finally {
-        await Delay(1000)
         this.loading = false
       }
     },

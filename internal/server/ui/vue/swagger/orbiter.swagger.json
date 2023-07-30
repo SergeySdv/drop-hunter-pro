@@ -1,0 +1,340 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/orbiter.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OrbiterService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/gw/v1/orbiter/from-tokens": {
+      "post": {
+        "operationId": "OrbiterService_GetFromTokens",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetFromTokensRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetFromTokensReq"
+            }
+          }
+        ],
+        "tags": [
+          "OrbiterService"
+        ]
+      }
+    },
+    "/api/gw/v1/orbiter/networks": {
+      "post": {
+        "operationId": "OrbiterService_GetNetworks",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetNetworksRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetNetworksReq"
+            }
+          }
+        ],
+        "tags": [
+          "OrbiterService"
+        ]
+      }
+    },
+    "/api/gw/v1/orbiter/swap-options": {
+      "post": {
+        "operationId": "OrbiterService_GetSwapOptions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetSwapOptionsRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetSwapOptionsReq"
+            }
+          }
+        ],
+        "tags": [
+          "OrbiterService"
+        ]
+      }
+    },
+    "/api/gw/v1/orbiter/to-tokens": {
+      "post": {
+        "operationId": "OrbiterService_GetToTokens",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetToTokensRes"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GetToTokensReq"
+            }
+          }
+        ],
+        "tags": [
+          "OrbiterService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "GetFromTokensReq": {
+      "type": "object",
+      "properties": {
+        "fromNetwork": {
+          "$ref": "#/definitions/Network"
+        },
+        "toNetwork": {
+          "$ref": "#/definitions/Network"
+        }
+      },
+      "required": [
+        "fromNetwork",
+        "toNetwork"
+      ]
+    },
+    "GetFromTokensRes": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Token"
+          }
+        }
+      },
+      "required": [
+        "tokens"
+      ]
+    },
+    "GetNetworksReq": {
+      "type": "object"
+    },
+    "GetNetworksRes": {
+      "type": "object",
+      "properties": {
+        "networks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Network"
+          }
+        }
+      },
+      "required": [
+        "networks"
+      ]
+    },
+    "GetSwapOptionsReq": {
+      "type": "object",
+      "properties": {
+        "fromNetwork": {
+          "$ref": "#/definitions/Network"
+        },
+        "toNetwork": {
+          "$ref": "#/definitions/Network"
+        },
+        "fromToken": {
+          "$ref": "#/definitions/Token"
+        },
+        "toToken": {
+          "$ref": "#/definitions/Token"
+        }
+      },
+      "required": [
+        "fromNetwork",
+        "toNetwork",
+        "fromToken",
+        "toToken"
+      ]
+    },
+    "GetSwapOptionsRes": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "string"
+        },
+        "max": {
+          "type": "string"
+        },
+        "fee": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "min",
+        "max",
+        "fee"
+      ]
+    },
+    "GetToTokensReq": {
+      "type": "object",
+      "properties": {
+        "fromNetwork": {
+          "$ref": "#/definitions/Network"
+        },
+        "toNetwork": {
+          "$ref": "#/definitions/Network"
+        },
+        "fromToken": {
+          "$ref": "#/definitions/Token"
+        }
+      },
+      "required": [
+        "fromNetwork",
+        "toNetwork",
+        "fromToken"
+      ]
+    },
+    "GetToTokensRes": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Token"
+          }
+        }
+      },
+      "required": [
+        "tokens"
+      ]
+    },
+    "Network": {
+      "type": "string",
+      "enum": [
+        "ARBITRUM",
+        "OPTIMISM",
+        "BinanaceBNB",
+        "Etherium",
+        "POLIGON",
+        "AVALANCHE",
+        "GOERLIETH",
+        "ZKSYNCERA",
+        "ZKSYNCERATESTNET",
+        "ZKSYNCLITE"
+      ],
+      "default": "ARBITRUM"
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Any"
+          }
+        }
+      }
+    },
+    "Token": {
+      "type": "string",
+      "enum": [
+        "USDT",
+        "ETH",
+        "USDC",
+        "STG",
+        "BNB",
+        "MATIC",
+        "AVAX",
+        "veSTG",
+        "WETH",
+        "LUSD",
+        "LSD",
+        "MUTE",
+        "MAV",
+        "SPACE",
+        "VC",
+        "IZI"
+      ],
+      "default": "USDT"
+    }
+  }
+}

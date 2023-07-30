@@ -2,7 +2,6 @@ package binance
 
 import (
 	"context"
-	"crypto_scripts/internal/lib"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/adshao/go-binance/v2"
 	"github.com/google/uuid"
+	"github.com/hardstylez72/cry/internal/lib"
 	"github.com/pkg/errors"
 )
 
@@ -165,6 +165,28 @@ func (s *Service) Withdraws(ctx context.Context, r []WithdrawReq) []WithdrawsRes
 
 type PendingFn func(id string, status string, err error)
 
+func (s *Service) WithdrawStatus(ctx context.Context, withdrawId string) (string, error) {
+	transactions, err := s.cli.NewListWithdrawsService().WithdrawOrderId(withdrawId).Do(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	for _, tx := range transactions {
+		switch tx.Status {
+		case StatusCompleted:
+			return "done", nil
+		case StatusAwaitingApproval, StatusProcessing:
+			return "waiting", nil
+		case StatusFail, StatusRejected, StatusCanceled:
+			return "error", nil
+		case StatusSend:
+			return "waiting", nil
+		}
+	}
+
+	return "", errors.New("unknown tx status")
+}
+
 func (s *Service) WithdrawsPending(ctx context.Context, withdrawOrderId string, interval time.Duration) (*string, error) {
 
 	maxPendings := 100
@@ -174,7 +196,7 @@ func (s *Service) WithdrawsPending(ctx context.Context, withdrawOrderId string, 
 		pendings++
 		transactions, err := s.cli.NewListWithdrawsService().WithdrawOrderId(withdrawOrderId).Do(ctx)
 		if err != nil {
-			continue
+			return nil, err
 		}
 
 		for _, tx := range transactions {
@@ -267,4 +289,14 @@ func (s *Service) GetWithDrawOptions(ctx context.Context) ([]WithdrawOption, err
 	}
 
 	return m, nil
+}
+
+func (a *Service) GetDepositAddr(ctx context.Context, network, coin string) (string, error) {
+
+	res, err := a.cli.NewGetDepositAddressService().Network(network).Coin(coin).Do(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Address, nil
 }

@@ -1,27 +1,35 @@
 package socks5
 
 import (
-	"context"
+	"net"
 	"net/http"
 	"strings"
 	"time"
 
+	_ "github.com/armon/go-socks5"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"golang.org/x/net/proxy"
 )
 
 type Config struct {
-	Host     string
-	Login    string
-	Password string
-	Disable  bool
+	Host            string
+	Login           string
+	Password        string
+	Disable         bool
+	UserAgentHeader string
 }
 
 type Proxy struct {
 	Config *Config
-	Stat   *GetIpStatRes
 	Cli    *http.Client
 }
+
+const (
+	Timeout             = time.Second * 30
+	KeepAlive           = time.Second * 30
+	TLSHandshakeTimeout = time.Second * 10
+)
 
 const mask = "ip:port:login:password"
 
@@ -30,12 +38,13 @@ var ErrParseError = errors.New("parse error")
 // NewSock5ProxyString
 // example "168.91.123.48:5346:meqdlqu:q6mnwsgrwef2"
 // mask "ip:port:login:password"
-func NewSock5ProxyString(s string) (*Proxy, error) {
+func NewSock5ProxyString(s, userAgentHeader string) (*Proxy, error) {
 	c, err := ParseProxy(s)
 	if err != nil {
 		return nil, errors.Wrap(ErrParseError, err.Error())
 	}
 
+	c.UserAgentHeader = userAgentHeader
 	return NewSock5Proxy(c)
 }
 
@@ -62,53 +71,71 @@ func NewSock5Proxy(c *Config) (*Proxy, error) {
 	}
 
 	if c.Disable {
-		return &Proxy{
+		p := &Proxy{
 			Config: c,
 			Cli: &http.Client{
 				Transport: http.DefaultTransport,
-				Timeout:   time.Second * 30,
+				Timeout:   Timeout,
 			},
-		}, nil
+		}
+
+		p.Cli.Transport = &Client{
+			source:          NewJaegerRoundTripper(p.Cli.Transport),
+			UserAgentHeader: c.UserAgentHeader,
+		}
+		return p, nil
 	}
 
 	auth := proxy.Auth{
 		User:     c.Login,
 		Password: c.Password,
 	}
-	dialer, err := proxy.SOCKS5("tcp", c.Host, &auth, proxy.Direct)
+
+	dialer, err := proxy.SOCKS5("tcp", c.Host, &auth, &net.Dialer{
+		Timeout:   Timeout,
+		KeepAlive: KeepAlive,
+	})
 	if err != nil {
 		return nil, err
 	}
-	tr := &http.Transport{
-		Dial: dialer.Dial,
-	}
+
 	p := &Proxy{
 		Config: c,
 		Cli: &http.Client{
-			Transport: tr,
-			Timeout:   time.Second * 30,
+			Transport: &http.Transport{
+				Proxy:                 nil,
+				ForceAttemptHTTP2:     true,
+				MaxIdleConns:          100,
+				IdleConnTimeout:       90 * time.Second,
+				TLSHandshakeTimeout:   10 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
+				Dial:                  dialer.Dial,
+			},
+			Timeout: Timeout,
 		},
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
-	defer cancel()
-
-	ip, err := p.GetIp(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "GetIp()")
+	p.Cli.Transport = &Client{
+		source:          NewJaegerRoundTripper(p.Cli.Transport),
+		UserAgentHeader: c.UserAgentHeader,
 	}
-
-	if ip.Ip != strings.Split(c.Host, ":")[0] {
-		return nil, errors.New("proxy ip and real ip does not match. please use private proxy")
-	}
-
-	stat, err := p.GetIpStat(ctx, strings.Split(c.Host, ":")[0])
-	if err != nil {
-		return nil, errors.Wrap(err, "GetIpStat")
-	}
-	p.Stat = stat
-
 	return p, nil
+}
+
+func NewJaegerRoundTripper(source http.RoundTripper) http.RoundTripper {
+	return otelhttp.NewTransport(source, otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
+		return r.Method + " " + r.URL.Scheme + "://" + r.URL.Host + r.URL.Path
+	}))
+}
+
+type Client struct {
+	source          http.RoundTripper
+	UserAgentHeader string
+}
+
+func (c *Client) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("User-Agent", c.UserAgentHeader)
+	return c.source.RoundTrip(req)
 }
 
 func ParseProxy(s string) (*Config, error) {

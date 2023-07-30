@@ -2,18 +2,25 @@ package repository
 
 import (
 	"context"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
+
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 )
 
-func (r *PGRepository) GetProcessArg(ctx context.Context, req *v1.GetProcessRequest) (*v1.GetProcessResponse, error) {
+func (r *pgRepository) GetProcessArg(ctx context.Context, req *v1.GetProcessRequest, userId string) (*v1.GetProcessResponse, error) {
 
 	var p ProcessArg
 
-	process, err := r.GetProcess(ctx, req.Id)
+	process, err := r.GetProcess(ctx, req.Id, userId)
 	if err != nil {
 		return nil, err
 	}
 	p.Process = *process
+
+	progress, err := r.GetProcessProgress(ctx, p.Id)
+	if err != nil {
+		return nil, err
+	}
+	p.Process.Progress = *progress
 
 	profiles, err := r.GetProcessProfiles(ctx, process.Id)
 	if err != nil {
@@ -42,7 +49,7 @@ func (r *PGRepository) GetProcessArg(ctx context.Context, req *v1.GetProcessRequ
 		return nil, err
 	}
 
-	pb, err := p.ToPB(flow.Flow.GetLabel())
+	pb, err := p.ToPB(flow.Flow)
 	if err != nil {
 		return nil, err
 	}
@@ -52,17 +59,17 @@ func (r *PGRepository) GetProcessArg(ctx context.Context, req *v1.GetProcessRequ
 	}, nil
 }
 
-func (r *PGRepository) GetProcess(ctx context.Context, id string) (*Process, error) {
-	q := `select * from process where id = $1`
+func (r *pgRepository) GetProcess(ctx context.Context, id, user_id string) (*Process, error) {
+	q := `select * from process where id = $1 and user_id = $2`
 	var a Process
-	if err := r.conn.GetContext(ctx, &a, q, id); err != nil {
+	if err := r.conn.GetContext(ctx, &a, q, id, user_id); err != nil {
 		return nil, err
 	}
 	return &a, nil
 }
 
-func (r *PGRepository) GetProcessProfiles(ctx context.Context, processId string) ([]ProcessProfile, error) {
-	q := `select * from process_profiles where process_id = $1 order by weight asc`
+func (r *pgRepository) GetProcessProfiles(ctx context.Context, processId string) ([]ProcessProfile, error) {
+	q := `select pp.*, cast(p.num as text) as label from process_profiles as pp join profiles as p on pp.profile_id = p.id where process_id = $1 order by weight asc`
 	a := make([]ProcessProfile, 0)
 	if err := r.conn.SelectContext(ctx, &a, q, processId); err != nil {
 		return nil, err
@@ -70,7 +77,7 @@ func (r *PGRepository) GetProcessProfiles(ctx context.Context, processId string)
 	return a, nil
 }
 
-func (r *PGRepository) GetProcessTasks(ctx context.Context, profileId string) ([]ProcessTask, error) {
+func (r *pgRepository) GetProcessTasks(ctx context.Context, profileId string) ([]ProcessTask, error) {
 	q := `select * from process_tasks where profile_id = $1 order by weight asc`
 	a := make([]ProcessTask, 0)
 	if err := r.conn.SelectContext(ctx, &a, q, profileId); err != nil {
@@ -79,7 +86,16 @@ func (r *PGRepository) GetProcessTasks(ctx context.Context, profileId string) ([
 	return a, nil
 }
 
-func (r *PGRepository) GetProcessTasksStatus(ctx context.Context, taskId string) (*string, error) {
+func (r *pgRepository) GetProcessTask(ctx context.Context, taskId string) (*ProcessTask, error) {
+	q := `select * from process_tasks where id = $1 order by weight asc`
+	var a ProcessTask
+	if err := r.conn.GetContext(ctx, &a, q, taskId); err != nil {
+		return nil, err
+	}
+	return &a, nil
+}
+
+func (r *pgRepository) GetProcessTasksStatus(ctx context.Context, taskId string) (*string, error) {
 	q := `select status from process_tasks where id = $1`
 	var a string
 	if err := r.conn.GetContext(ctx, &a, q, taskId); err != nil {

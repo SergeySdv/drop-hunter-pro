@@ -12,7 +12,8 @@ codegen({
   serviceNameSuffix: '',
   useStaticMethod: false,
   include: ['*'],
-  fileName: 'profile.ts'
+  fileName: 'profile.ts',
+  useHeaderParameters: true,
 });
 
 codegen({
@@ -69,4 +70,27 @@ codegen({
   useStaticMethod: false,
   include: ['*'],
   fileName: 'settings.ts'
+});
+
+codegen({
+  methodNameMode: 'operationId',
+  source: require(path.resolve(__dirname, 'swagger/swap1inch.swagger.json')),
+  outputDir: path.resolve(__dirname, 'src/generated/'),
+  useCustomerRequestInstance: true,
+  serviceNameSuffix: '',
+  useStaticMethod: false,
+  include: ['*'],
+  fileName: 'swap1inch.ts'
+});
+
+
+codegen({
+  methodNameMode: 'operationId',
+  source: require(path.resolve(__dirname, 'swagger/orbiter.swagger.json')),
+  outputDir: path.resolve(__dirname, 'src/generated/'),
+  useCustomerRequestInstance: true,
+  serviceNameSuffix: '',
+  useStaticMethod: false,
+  include: ['*'],
+  fileName: 'orbiter.ts'
 });

@@ -78,6 +78,14 @@ func TestRoundFloat1(t *testing.T) {
 			},
 			want: 0.00,
 		},
+		{
+			name: "",
+			args: args{
+				v:    0.28012,
+				prec: 2,
+			},
+			want: 0.28,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

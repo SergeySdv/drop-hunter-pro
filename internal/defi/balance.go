@@ -2,18 +2,17 @@ package defi
 
 import (
 	"context"
-	"crypto_scripts/internal/defi/contracts/erc_20"
-	"crypto_scripts/internal/lib"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/hardstylez72/cry/internal/defi/contracts/erc_20"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 )
 
 type GetBalanceReq struct {
 	WalletAddress common.Address
 	Token         Token
-	RetryCount    int
 }
 
 type GetBalanceRes struct {
@@ -25,20 +24,18 @@ type GetBalanceRes struct {
 }
 
 func (c *EtheriumClient) GetNetworkToken() Token {
-	return c.c.MainToken
+	return c.Cfg.MainToken
 }
 
 func (c *EtheriumClient) GetBalance(ctx context.Context, req *GetBalanceReq) (*GetBalanceRes, error) {
-	return lib.Retry[*GetBalanceReq, *GetBalanceRes](ctx, c.getBalance, req, &lib.RetryOpt{
-		RetryCount: req.RetryCount,
-	})
+	return c.getBalance(ctx, req)
 }
 func (c *EtheriumClient) getBalance(ctx context.Context, req *GetBalanceReq) (*GetBalanceRes, error) {
 
 	fromAddress := req.WalletAddress
 
-	if req.Token == c.c.MainToken {
-		b, err := c.cli.BalanceAt(ctx, fromAddress, nil)
+	if req.Token == c.Cfg.MainToken {
+		b, err := c.Cli.BalanceAt(ctx, fromAddress, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -53,17 +50,21 @@ func (c *EtheriumClient) getBalance(ctx context.Context, req *GetBalanceReq) (*G
 		}, nil
 	}
 
-	ta, ok := c.c.TokenMap[req.Token]
+	ta, ok := c.Cfg.TokenMap[req.Token]
 	if !ok {
-		return nil, errTokenNotSupported(req.Token)
+		return nil, NewErrTokenNotSupported(req.Token)
 	}
 
-	s, err := erc_20.NewStorageCaller(ta, c.cli)
+	s, err := erc_20.NewStorageCaller(ta, c.Cli)
 	if err != nil {
 		return nil, err
 	}
 
-	b, err := s.BalanceOf(nil, fromAddress)
+	opt := &bind.CallOpts{
+		Context: ctx,
+	}
+
+	b, err := s.BalanceOf(opt, fromAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +77,7 @@ func (c *EtheriumClient) getBalance(ctx context.Context, req *GetBalanceReq) (*G
 		HumanReadable: WeiToToken(b, req.Token).String(),
 		Float:         f,
 	}
-	if c.c.Network == v1.Network_BinanaceBNB {
+	if c.Cfg.Network == v1.Network_BinanaceBNB {
 		res.HumanReadable = WEIToEther(b).String()
 	}
 
@@ -84,5 +85,5 @@ func (c *EtheriumClient) getBalance(ctx context.Context, req *GetBalanceReq) (*G
 }
 
 func (c *EtheriumClient) TxViewFn(id string) string {
-	return c.c.TxViewFn(id)
+	return c.Cfg.TxViewFn(id)
 }

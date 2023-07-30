@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"time"
 
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -52,7 +52,7 @@ func (a *ProcessTask) ToPB() (*v1.ProcessTask, error) {
 	return &out, nil
 }
 
-func (r *PGRepository) GetTaskStatus(ctx context.Context, taskId string) (*v1.ProcessStatus, error) {
+func (r *pgRepository) GetTaskStatus(ctx context.Context, taskId string) (*v1.ProcessStatus, error) {
 	var s string
 	if err := r.conn.GetContext(ctx, &s, `select status from process_tasks where id = $1`, taskId); err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (r *PGRepository) GetTaskStatus(ctx context.Context, taskId string) (*v1.Pr
 	temp := v1.ProcessStatus(v1.ProcessStatus_value[s])
 	return &temp, nil
 }
-func (r *PGRepository) UpdateProcessTaskStatus(ctx context.Context, status, taskId, processId string) error {
+func (r *pgRepository) UpdateProcessTaskStatus(ctx context.Context, status, taskId, processId string) error {
 
 	updatedAt := time.Now()
 
@@ -87,7 +87,7 @@ func (r *PGRepository) UpdateProcessTaskStatus(ctx context.Context, status, task
 	return nil
 }
 
-func (r *PGRepository) UpdateProcessTask(ctx context.Context, req *v1.ProcessTask, taskId, processId, profileId string) error {
+func (r *pgRepository) UpdateProcessTask(ctx context.Context, req *v1.ProcessTask, taskId, processId, profileId string) error {
 
 	updatedAt := time.Now()
 	var p ProcessTask
@@ -117,7 +117,7 @@ func (r *PGRepository) UpdateProcessTask(ctx context.Context, req *v1.ProcessTas
 	return nil
 }
 
-func (r *PGRepository) GetProcessProfileTaskStatuses(ctx context.Context, profileId string) ([]v1.ProcessStatus, error) {
+func (r *pgRepository) GetProcessProfileTaskStatuses(ctx context.Context, profileId string) ([]v1.ProcessStatus, error) {
 	q := `select status from process_tasks where profile_id = $1`
 	temp := make([]string, 0)
 	if err := r.conn.SelectContext(ctx, &temp, q, profileId); err != nil {

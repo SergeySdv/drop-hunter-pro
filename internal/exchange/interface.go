@@ -2,7 +2,8 @@ package exchange
 
 import (
 	"context"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
+
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 )
 
 type WithdrawId = string
@@ -18,8 +19,11 @@ type WithdrawResponse struct {
 	WithdrawId WithdrawId
 }
 
-type ExchangeWithdrawer interface {
+type Withdrawer interface {
 	GetExchangeWithdrawOptions(ctx context.Context, req *v1.GetExchangeWithdrawOptionsRequest) (*v1.GetExchangeWithdrawOptionsResponse, error)
 	Withdraw(ctx context.Context, req *WithdrawRequest) (*WithdrawResponse, error)
 	WaitConfirm(ctx context.Context, id WithdrawId) (*string, error)
+	Ping(ctx context.Context) error
+	GetBalance(ctx context.Context, coin string) (float64, error)
+	WithdrawStatus(ctx context.Context, withdrawId string) (string, error)
 }

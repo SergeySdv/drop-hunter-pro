@@ -2,18 +2,19 @@ package defi
 
 import (
 	"context"
-	"crypto_scripts/internal/defi/contracts/stargate/router"
-	"crypto_scripts/internal/lib"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/hardstylez72/cry/internal/defi/contracts/stargate/router"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"github.com/pkg/errors"
 )
 
 type GetStargateBridgeFeeReq struct {
 	ToChain v1.Network
 	Wallet  common.Address
+	Retry   int
 }
 
 type GetStargateBridgeFeeRes struct {
@@ -22,13 +23,7 @@ type GetStargateBridgeFeeRes struct {
 }
 
 func (c *EtheriumClient) GetStargateBridgeFee(ctx context.Context, req *GetStargateBridgeFeeReq) (*GetStargateBridgeFeeRes, error) {
-	return lib.Retry[*GetStargateBridgeFeeReq, *GetStargateBridgeFeeRes](ctx, c.getStargateBridgeFee, req, &lib.RetryOpt{
-		RetryCount: RetryMax,
-	})
-}
-
-func (c *EtheriumClient) getStargateBridgeFee(ctx context.Context, req *GetStargateBridgeFeeReq) (*GetStargateBridgeFeeRes, error) {
-	trx, err := router.NewRouterCaller(c.c.Dict.Stargate.StargateRouterAddress, c.cli)
+	trx, err := router.NewRouterCaller(c.Cfg.Dict.Stargate.StargateRouterAddress, c.Cli)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +35,11 @@ func (c *EtheriumClient) getStargateBridgeFee(ctx context.Context, req *GetStarg
 		return nil, errors.New("invalid chain: " + string(req.ToChain))
 	}
 
-	fee1, fee2, err := trx.QuoteLayerZeroFee(nil, distChain, typeFuncSwap, toAddress, payload, router.IStargateRouterlzTxObj{
+	opt := &bind.CallOpts{
+		Context: ctx,
+	}
+
+	fee1, fee2, err := trx.QuoteLayerZeroFee(opt, distChain, typeFuncSwap, toAddress, payload, router.IStargateRouterlzTxObj{
 		DstGasForCall:   big.NewInt(0),
 		DstNativeAmount: big.NewInt(0),
 		DstNativeAddr:   []byte{},

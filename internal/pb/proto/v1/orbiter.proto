@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+
+package orbiter;
+option go_package = "grpc/v1";
+
+service OrbiterService {
+  rpc GetFromTokens(GetFromTokensReq) returns (GetFromTokensRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/orbiter/from-tokens",
+      body: "*"
+    };
+  }
+  rpc GetToTokens(GetToTokensReq) returns (GetToTokensRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/orbiter/to-tokens",
+      body: "*"
+    };
+  }
+  rpc GetSwapOptions(GetSwapOptionsReq) returns (GetSwapOptionsRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/orbiter/swap-options",
+      body: "*"
+    };
+  }
+  rpc GetNetworks(GetNetworksReq) returns (GetNetworksRes) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/orbiter/networks",
+      body: "*"
+    };
+  }
+}
+
+message GetSwapOptionsReq {
+  shared.Network from_network = 1;
+  shared.Network to_network = 2;
+  shared.Token from_token = 3;
+  shared.Token to_token = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["from_network", "to_network", "from_token", "to_token"]
+    }
+  };
+}
+message GetSwapOptionsRes {
+  string min = 1;
+  string max = 2;
+  string fee = 3;
+
+  optional string error = 4;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["min", "max", "fee"]
+    }
+  };
+}
+
+message GetToTokensReq {
+  shared.Network from_network = 1;
+  shared.Network to_network = 2;
+  shared.Token from_token = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["from_network", "to_network", "from_token"]
+    }
+  };
+}
+message GetToTokensRes {
+  repeated shared.Token tokens = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tokens"]
+    }
+  };
+}
+
+message GetFromTokensReq {
+  shared.Network from_network = 1;
+  shared.Network to_network = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["from_network", "to_network"]
+    }
+  };
+}
+message GetFromTokensRes {
+  repeated shared.Token tokens = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tokens"]
+    }
+  };
+}
+
+message GetNetworksReq {}
+message GetNetworksRes {
+  repeated shared.Network networks = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["networks"]
+    }
+  };
+}
+
+

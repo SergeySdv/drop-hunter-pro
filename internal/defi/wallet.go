@@ -2,6 +2,7 @@ package defi
 
 import (
 	"crypto/ecdsa"
+	"encoding/hex"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -13,9 +14,17 @@ type WalletTransactor struct {
 	PublicKey    *ecdsa.PublicKey
 	WalletAddr   common.Address
 	WalletAddrHR string
+	PK           string
+	PKb          []byte
 }
 
 func NewWalletTransactor(privateKey string) (*WalletTransactor, error) {
+
+	pkb, err := hex.DecodeString(privateKey)
+	if err != nil {
+		return nil, errors.Wrap(err, "crypto.HexToECDSA(privateKey)")
+	}
+
 	pk, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "crypto.HexToECDSA(privateKey)")
@@ -34,5 +43,7 @@ func NewWalletTransactor(privateKey string) (*WalletTransactor, error) {
 		PublicKey:    publicKeyECDSA,
 		WalletAddr:   walletAddr,
 		WalletAddrHR: walletAddr.String(),
+		PK:           privateKey,
+		PKb:          pkb,
 	}, nil
 }

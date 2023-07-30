@@ -2,24 +2,22 @@ package defi
 
 import (
 	"context"
-	"crypto_scripts/internal/defi/contracts/stg"
-	"crypto_scripts/internal/lib"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/hardstylez72/cry/internal/defi/contracts/stg"
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"github.com/pkg/errors"
 )
 
 type StargateBridgeSwapSTGReq struct {
-	DestChain v1.Network
-	Wallet    *WalletTransactor
-	Quantity  *big.Int
-	Fee       *big.Int
-	Gas       *GasLimit
-	Opt       *lib.RetryOpt
+	DestChain    v1.Network
+	Wallet       *WalletTransactor
+	Quantity     *big.Int
+	Gas          *Gas
+	EstimateOnly bool
 }
 
 func (r *StargateBridgeSwapSTGReq) Validate() error {
@@ -43,7 +41,8 @@ func (r *StargateBridgeSwapSTGReq) Validate() error {
 }
 
 type StargateBridgeSwapSTGRes struct {
-	Tx *types.Transaction
+	Tx    *types.Transaction
+	ECost *EstimatedGasCost
 }
 
 func (c *EtheriumClient) StargateBridgeSwapSTG(ctx context.Context, req *StargateBridgeSwapSTGReq) (*StargateBridgeSwapSTGRes, error) {
@@ -52,16 +51,12 @@ func (c *EtheriumClient) StargateBridgeSwapSTG(ctx context.Context, req *Stargat
 		return nil, err
 	}
 
-	return lib.Retry[*StargateBridgeSwapSTGReq, *StargateBridgeSwapSTGRes](ctx, c.stargateBridgeSwapSTG, req, req.Opt)
-}
-func (c *EtheriumClient) stargateBridgeSwapSTG(ctx context.Context, req *StargateBridgeSwapSTGReq) (*StargateBridgeSwapSTGRes, error) {
-
-	tr, err := stg.NewStgTransactor(c.c.TokenMap[v1.Token_STG], c.cli)
+	tr, err := stg.NewStgTransactor(c.Cfg.TokenMap[v1.Token_STG], c.Cli)
 	if err != nil {
 		return nil, err
 	}
 
-	chainID, err := c.cli.ChainID(ctx)
+	chainID, err := c.Cli.ChainID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -72,19 +67,21 @@ func (c *EtheriumClient) stargateBridgeSwapSTG(ctx context.Context, req *Stargat
 	}
 	opt.Context = ctx
 
-	if req.Fee == nil {
-		fee, err := c.GetStargateBridgeFee(ctx, &GetStargateBridgeFeeReq{
-			ToChain: req.DestChain,
-			Wallet:  req.Wallet.WalletAddr,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "GetStargateBridgeFee")
-		}
-		req.Fee = fee.Fee1
+	fee, err := c.GetStargateBridgeFee(ctx, &GetStargateBridgeFeeReq{
+		ToChain: req.DestChain,
+		Wallet:  req.Wallet.WalletAddr,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "GetStargateBridgeFee")
 	}
 
-	opt.Value = req.Fee
-	opt.NoSend = true
+	opt.Value = fee.Fee1
+	opt.NoSend = req.EstimateOnly
+
+	if req.Gas.RuleSet() {
+		opt.GasLimit = req.Gas.GasLimit.Uint64()
+		opt.GasPrice = &req.Gas.GasPrice
+	}
 
 	destChainId := ChainIdMap[req.DestChain]
 
@@ -100,22 +97,18 @@ func (c *EtheriumClient) stargateBridgeSwapSTG(ctx context.Context, req *Stargat
 		return nil, errors.Wrap(err, "tr.SendTokens")
 	}
 
-	opt.GasPrice = c.ResolveGasPrice(req.Gas, tx)
-	opt.NoSend = false
-
-	tx, err = tr.SendTokens(
-		opt,
-		destChainId,
-		req.Wallet.WalletAddr.Bytes(),
-		req.Quantity,
-		common.HexToAddress("0x0000000000000000000000000000000000000000"),
-		[]byte{},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "tr.SendTokens")
+	eCost := &EstimatedGasCost{
+		GasLimit:    big.NewInt(0).SetUint64(tx.Gas()),
+		GasPrice:    tx.GasPrice(),
+		TotalGasWei: new(big.Int).Add(MinerGasLegacy(tx.GasPrice(), tx.Gas()), fee.Fee1),
 	}
 
 	return &StargateBridgeSwapSTGRes{
-		tx,
+		Tx:    tx,
+		ECost: eCost,
 	}, nil
+}
+
+func GetTxGasPrice(tx *types.Transaction) *big.Int {
+	return tx.GasPrice()
 }

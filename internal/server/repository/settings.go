@@ -2,16 +2,16 @@ package repository
 
 import (
 	"context"
-	v1 "crypto_scripts/internal/server/pb/gen/proto/go/v1"
 	"database/sql"
 
+	v1 "github.com/hardstylez72/cry/internal/pb/gen/proto/go/v1"
 	"github.com/pkg/errors"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
 var ErrNotFound = errors.New("not found")
 
-func (r *PGRepository) GetSettings(ctx context.Context, userId string) (*v1.Settings, error) {
+func (r *pgRepository) GetSettings(ctx context.Context, userId string) (*v1.Settings, error) {
 	var payload string
 	if err := r.conn.GetContext(ctx, &payload, "select payload from settings where user_id = $1", userId); err != nil {
 		if err == sql.ErrNoRows {
@@ -28,7 +28,7 @@ func (r *PGRepository) GetSettings(ctx context.Context, userId string) (*v1.Sett
 	return &s, nil
 }
 
-func (r *PGRepository) UpdateSettings(ctx context.Context, request *v1.Settings) error {
+func (r *pgRepository) UpdateSettings(ctx context.Context, request *v1.Settings) error {
 	p, err := protojson.Marshal(request)
 	if err != nil {
 		return err

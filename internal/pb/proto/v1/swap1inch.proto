@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "v1/shared.proto";
+
+package swap1inch;
+option go_package = "grpc/v1";
+
+service Swap1inchService {
+  rpc GetNetworks(GetNetworksRequest) returns (GetNetworksResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/swap1inch/networks",
+      body: "*"
+    };
+  }
+  rpc GetTokens(GetTokensRequest) returns (GetTokensResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/swap1inch/tokens",
+      body: "*"
+    };
+  }
+  rpc GetSwapOptions(GetSwapOptionsRequest) returns (GetSwapOptionsResponse) {
+    option (google.api.http) = {
+      post: "/api/gw/v1/swap1inch/swap/options",
+      body: "*"
+    };
+  }
+}
+
+message GetNetworksRequest {
+
+}
+
+message GetNetworksResponse {
+  repeated shared.Network networks = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["networks"]
+    }
+  };
+}
+
+
+message GetTokensRequest {
+  shared.Network network = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["network"]
+    }
+  };
+}
+
+message Swap1inchToken {
+  string code = 1;
+  string name = 2;
+  string addr = 3;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["code", "name", "addr"]
+    }
+  };
+}
+
+message GetTokensResponse{
+  repeated Swap1inchToken tokens = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["tokens"]
+    }
+  };
+}
+
+message GetSwapOptionsRequest {
+  string fromTokenAddr = 1;
+  string toTokenAddr = 2;
+  string amount = 3;
+  shared.Network network = 4;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["fromTokenAddr", "toTokenAddr", "amount", "network"]
+    }
+  };
+}
+
+
+message GetSwapOptionsResponse {
+  repeated GetSwapOptionsProtocol protocols = 1;
+
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["protocols"]
+    }
+  };
+}
+
+message GetSwapOptionsProtocol {
+  string name = 1;
+  string estimated_gas = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["name", "estimated_gas"]
+    }
+  };
+}

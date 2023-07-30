@@ -3,7 +3,7 @@
 create table if not exists process (
     id uuid primary key,
     status text not null,
-    user_id uuid not null,
+    user_id uuid not null references users (id),
     flow_id uuid not null references flow (id) ON DELETE CASCADE,
     payload text not null,
     updated_at timestamp not null default now(),

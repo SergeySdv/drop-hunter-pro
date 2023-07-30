@@ -121,7 +121,7 @@ export class FlowService {
     options: IRequestOptions = {}
   ): Promise<CreateFlowResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/flow/create';
+      let url = basePath + '/api/gw/v1/flow/create';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -143,7 +143,7 @@ export class FlowService {
     options: IRequestOptions = {}
   ): Promise<DeleteFlowResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/flow/delete';
+      let url = basePath + '/api/gw/v1/flow/delete';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -165,7 +165,7 @@ export class FlowService {
     options: IRequestOptions = {}
   ): Promise<GetFlowResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/flow/get';
+      let url = basePath + '/api/gw/v1/flow/get';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -187,7 +187,7 @@ export class FlowService {
     options: IRequestOptions = {}
   ): Promise<ListFlowResponse> {
     return new Promise((resolve, reject) => {
-      let url = basePath + '/api/gw/api/v1/flow/list';
+      let url = basePath + '/api/gw/v1/flow/list';
 
       const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
@@ -198,6 +198,68 @@ export class FlowService {
       axios(configs, resolve, reject);
     });
   }
+  /**
+   *
+   */
+  flowServiceUpdateFlow(
+    params: {
+      /**  */
+      body: UpdateFlowRequest;
+    } = {} as any,
+    options: IRequestOptions = {}
+  ): Promise<UpdateFlowResponse> {
+    return new Promise((resolve, reject) => {
+      let url = basePath + '/api/gw/v1/flow/update';
+
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
+
+      let data = params['body'];
+
+      configs.data = data;
+
+      axios(configs, resolve, reject);
+    });
+  }
+}
+
+export interface AmUni {
+  /**  */
+  gwei?: string;
+
+  /**  */
+  eth?: string;
+
+  /**  */
+  usd?: string;
+
+  /**  */
+  network?: Network;
+
+  /**  */
+  wei?: string;
+}
+
+export interface Amount {
+  /**  */
+  sendAll?: boolean;
+
+  /**  */
+  sendPercent?: number;
+
+  /**  */
+  sendAmount?: number;
+
+  /**  */
+  sendValue?: string;
+
+  /**  */
+  send?: AmUni;
+
+  /**  */
+  balance?: AmUni;
+
+  /**  */
+  gasEstimated?: AmUni;
 }
 
 export interface CreateFlowRequest {
@@ -228,6 +290,9 @@ export interface DelayTask {
 
   /**  */
   maxRandom?: string;
+
+  /**  */
+  randomDuration?: string;
 }
 
 export interface DeleteFlowRequest {
@@ -236,6 +301,23 @@ export interface DeleteFlowRequest {
 }
 
 export interface DeleteFlowResponse {}
+
+export interface EzkaliburSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
 
 export interface GetFlowRequest {
   /**  */
@@ -247,6 +329,23 @@ export interface GetFlowResponse {
   flow: flow_Flow;
 }
 
+export interface IzumiSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
 export interface ListFlowRequest {}
 
 export interface ListFlowResponse {
@@ -254,7 +353,153 @@ export interface ListFlowResponse {
   flows: flow_Flow[];
 }
 
+export interface MaverickSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
 export interface MockTask {}
+
+export interface MuteioSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface OkexBinanaceTask {
+  /**  */
+  okexWithdrawerId: string;
+
+  /**  */
+  okexToken: string;
+
+  /**  */
+  okexNetwork: string;
+
+  /**  */
+  binanaceDepositAddr: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  withdrawTxId?: string;
+}
+
+export interface OkexDepositTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  okexAccName?: string;
+
+  /**  */
+  okexAddr?: string;
+
+  /**  */
+  token: Token;
+
+  /**  */
+  address?: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txComplete?: boolean;
+
+  /**  */
+  subMainTransfer?: boolean;
+
+  /**  */
+  amount?: Amount;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface OrbiterBridgeTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  fromNetwork: Network;
+
+  /**  */
+  toNetwork: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  orbiterReceiverAddr?: string;
+
+  /**  */
+  orbiterSenderAddr?: string;
+
+  /**  */
+  swapCompleted?: boolean;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface SnapshotVoteTask {
+  /**  */
+  space: string;
+
+  /**  */
+  proposal: object;
+}
+
+export interface SpaceFiSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
 
 export interface StargateBridgeTask {
   /**  */
@@ -268,6 +513,117 @@ export interface StargateBridgeTask {
 
   /**  */
   toToken: Token;
+
+  /**  */
+  fee?: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  layerZeroStatus?: string;
+
+  /**  */
+  lzscanUrl?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  amount: Amount;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface Swap1inchTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  fromTokenName: string;
+
+  /**  */
+  fromTokenCode: string;
+
+  /**  */
+  fromTokenAddr: string;
+
+  /**  */
+  toTokenName: string;
+
+  /**  */
+  toTokenCode: string;
+
+  /**  */
+  toTokenAddr: string;
+
+  /**  */
+  sendAll?: boolean;
+
+  /**  */
+  sendPercent?: string;
+
+  /**  */
+  sendAmount?: number;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  swapCompleted?: boolean;
+}
+
+export interface SyncSwapLPTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  a: Token;
+
+  /**  */
+  b: Token;
+
+  /**  */
+  tx?: TaskTx;
+
+  /**  */
+  add: boolean;
+}
+
+export interface SyncSwapTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  amount: Amount;
+
+  /**  */
+  amountKind: string;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  swapCompleted?: boolean;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface Task {
@@ -291,6 +647,170 @@ export interface Task {
 
   /**  */
   withdrawExchangeTask?: WithdrawExchangeTask;
+
+  /**  */
+  okexDepositTask?: OkexDepositTask;
+
+  /**  */
+  testNetBridgeSwapTask?: TestNetBridgeSwapTask;
+
+  /**  */
+  snapshotVoteTask?: SnapshotVoteTask;
+
+  /**  */
+  okexBinanaceTask?: OkexBinanaceTask;
+
+  /**  */
+  swap1inchTask?: Swap1inchTask;
+
+  /**  */
+  syncSwapTask?: SyncSwapTask;
+
+  /**  */
+  zkSyncOfficialBridgeToEthereumTask?: ZkSyncOfficialBridgeToEthereumTask;
+
+  /**  */
+  orbiterBridgeTask?: OrbiterBridgeTask;
+
+  /**  */
+  zkSyncOfficialBridgeFromEthereumTask?: ZkSyncOfficialBridgeFromEthereumTask;
+
+  /**  */
+  wETHTask?: WETHTask;
+
+  /**  */
+  muteioSwapTask?: MuteioSwapTask;
+
+  /**  */
+  syncSwapLPTask?: SyncSwapLPTask;
+
+  /**  */
+  maverickSwapTask?: MaverickSwapTask;
+
+  /**  */
+  spaceFiSwapTask?: SpaceFiSwapTask;
+
+  /**  */
+  velocoreSwapTask?: VelocoreSwapTask;
+
+  /**  */
+  izumiSwapTask?: IzumiSwapTask;
+
+  /**  */
+  veSyncSwapTask?: VeSyncSwapTask;
+
+  /**  */
+  ezkaliburSwapTask?: EzkaliburSwapTask;
+
+  /**  */
+  zkSwapTask?: ZkSwapTask;
+}
+
+export interface TaskTx {
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  retryCount?: string;
+
+  /**  */
+  url?: string;
+
+  /**  */
+  network?: Network;
+
+  /**  */
+  code?: string;
+
+  /**  */
+  gasEstimated?: AmUni;
+
+  /**  */
+  gasResult?: AmUni;
+
+  /**  */
+  gasLimit?: AmUni;
+
+  /**  */
+  multiplier?: number;
+}
+
+export interface TestNetBridgeSwapTask {
+  /**  */
+  network: Network;
+
+  /**  */
+  minAmount: string;
+
+  /**  */
+  maxAmount: string;
+
+  /**  */
+  amount?: string;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface UpdateFlowRequest {
+  /**  */
+  flow: flow_Flow;
+}
+
+export interface UpdateFlowResponse {
+  /**  */
+  flow: flow_Flow;
+}
+
+export interface VeSyncSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface VelocoreSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface WETHTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  wrap: boolean;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface WithdrawExchangeTask {
@@ -317,6 +837,66 @@ export interface WithdrawExchangeTask {
 
   /**  */
   txId?: string;
+
+  /**  */
+  withdrawAddr?: string;
+
+  /**  */
+  useExternalAddr?: boolean;
+
+  /**  */
+  sendAllCoins?: boolean;
+}
+
+export interface ZkSwapTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  fromToken: Token;
+
+  /**  */
+  toToken: Token;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface ZkSyncOfficialBridgeFromEthereumTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  tx?: TaskTx;
+}
+
+export interface ZkSyncOfficialBridgeToEthereumTask {
+  /**  */
+  amount: Amount;
+
+  /**  */
+  network: Network;
+
+  /**  */
+  amountKind: string;
+
+  /**  */
+  txCompleted?: boolean;
+
+  /**  */
+  txId?: string;
+
+  /**  */
+  tx?: TaskTx;
 }
 
 export interface flow_Flow {
@@ -334,6 +914,9 @@ export interface flow_Flow {
 
   /**  */
   createdAt: Date;
+
+  /**  */
+  deletedAt?: Date;
 }
 
 export enum Network {
@@ -342,14 +925,37 @@ export enum Network {
   'BinanaceBNB' = 'BinanaceBNB',
   'Etherium' = 'Etherium',
   'POLIGON' = 'POLIGON',
-  'AVALANCHE' = 'AVALANCHE'
+  'AVALANCHE' = 'AVALANCHE',
+  'GOERLIETH' = 'GOERLIETH',
+  'ZKSYNCERA' = 'ZKSYNCERA',
+  'ZKSYNCERATESTNET' = 'ZKSYNCERATESTNET',
+  'ZKSYNCLITE' = 'ZKSYNCLITE'
 }
 
 export enum TaskType {
   'StargateBridge' = 'StargateBridge',
   'Mock' = 'Mock',
   'Delay' = 'Delay',
-  'WithdrawExchange' = 'WithdrawExchange'
+  'WithdrawExchange' = 'WithdrawExchange',
+  'OkexDeposit' = 'OkexDeposit',
+  'TestNetBridgeSwap' = 'TestNetBridgeSwap',
+  'SnapshotVote' = 'SnapshotVote',
+  'OkexBinance' = 'OkexBinance',
+  'Swap1inch' = 'Swap1inch',
+  'SyncSwap' = 'SyncSwap',
+  'ZkSyncOfficialBridgeToEthereum' = 'ZkSyncOfficialBridgeToEthereum',
+  'OrbiterBridge' = 'OrbiterBridge',
+  'ZkSyncOfficialBridgeFromEthereum' = 'ZkSyncOfficialBridgeFromEthereum',
+  'WETH' = 'WETH',
+  'MuteioSwap' = 'MuteioSwap',
+  'SyncSwapLP' = 'SyncSwapLP',
+  'MaverickSwap' = 'MaverickSwap',
+  'SpaceFISwap' = 'SpaceFISwap',
+  'VelocoreSwap' = 'VelocoreSwap',
+  'IzumiSwap' = 'IzumiSwap',
+  'VeSyncSwap' = 'VeSyncSwap',
+  'EzkaliburSwap' = 'EzkaliburSwap',
+  'ZkSwap' = 'ZkSwap'
 }
 
 export enum Token {
@@ -359,5 +965,14 @@ export enum Token {
   'STG' = 'STG',
   'BNB' = 'BNB',
   'MATIC' = 'MATIC',
-  'AVAX' = 'AVAX'
+  'AVAX' = 'AVAX',
+  'veSTG' = 'veSTG',
+  'WETH' = 'WETH',
+  'LUSD' = 'LUSD',
+  'LSD' = 'LSD',
+  'MUTE' = 'MUTE',
+  'MAV' = 'MAV',
+  'SPACE' = 'SPACE',
+  'VC' = 'VC',
+  'IZI' = 'IZI'
 }

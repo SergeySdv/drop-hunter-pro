@@ -16,20 +16,42 @@ type (
 	ENV string
 
 	Config struct {
-		Env        ENV
-		GRPCAddr   string
-		GWAddr     string
-		StaticPort string
-		ProxyPort  string
-		Database   Database
-		App        App
-		InstanceId string
+		Env           ENV
+		GRPCAddr      string
+		GWAddr        string
+		StaticPort    string
+		ProxyPort     string
+		Database      Database
+		App           App
+		Auth          Auth
+		InstanceId    string
+		MigrationsDir string
+		TelegramToken string
+		SnapshotHost  string
+		Lazanya       string
+
+		PrometheusPort     string
+		JaegerUrl          string
+		JaegerServiceName  string
+		PayServiceGRPCAddr string
+
+		WebKey string
+		WebIV  string
 	}
 
 	App struct {
 		Domain string
 		Schema string
 		Port   string
+	}
+
+	Auth struct {
+		GoogleClientId     string
+		GoogleClientSecret string
+		CookieName         string
+
+		RedirectOnSuccess string
+		RedirectOnFailure string
 	}
 )
 
@@ -72,7 +94,25 @@ func Load() (*Config, error) {
 			Schema: mustenv("SCHEMA"),
 			Port:   mayend("PORT"),
 		},
-		InstanceId: uuid.New().String(),
+		Auth: Auth{
+			GoogleClientId:     mustenv("GOOGLE_CLIENT_ID"),
+			GoogleClientSecret: mustenv("GOOGLE_CLIENT_SECRET"),
+
+			CookieName:        mustenv("COOKIE_NAME"),
+			RedirectOnSuccess: mustenv("REDIRECT_ON_SUCCESS"),
+			RedirectOnFailure: mustenv("REDIRECT_ON_FAILURE"),
+		},
+		InstanceId:         uuid.New().String(),
+		MigrationsDir:      mustenv("MIGRATIONS_DIR"),
+		TelegramToken:      mustenv("TELEGRAM_TOKEN"),
+		SnapshotHost:       mustenv("SNAPSHOT_ORG_HOST"),
+		Lazanya:            mustenv("LAZANYA"),
+		PrometheusPort:     mustenv("PROMETHEUS_PORT"),
+		JaegerUrl:          mustenv("JAEGER_URL"),
+		JaegerServiceName:  mustenv("JAEGER_SERVICE_NAME"),
+		PayServiceGRPCAddr: mustenv("PAY_SERVICE_GRPC_ADDR"),
+		WebKey:             mustenv("WEB_KEY"),
+		WebIV:              mustenv("WEB_IV"),
 	}
 
 	CFG = c
